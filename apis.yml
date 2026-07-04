@@ -1,0 +1,214 @@
+aid: up42
+url: https://raw.githubusercontent.com/api-evangelist/up42/refs/heads/main/apis.yml
+name: UP42
+kind: company
+description: UP42 is a geospatial marketplace and developer platform for Earth
+  observation (EO) data and analytics, operated by Airbus Defence and Space. It lets
+  you search a global archive of satellite and aerial imagery (Catalog), task new
+  satellite acquisitions on demand (Tasking), place and track Orders, store and
+  download results as cloud-native Assets, and browse everything through a
+  STAC-compliant data management API. Delivery, ordering, and storage are exposed
+  over a documented REST API at https://api.up42.com, authenticated with OAuth2
+  access tokens (obtained from an API key or account credentials), and are also
+  wrapped by an official Python SDK. Storage is powered by STAC and the
+  cloud-native asset model, and job/order status changes can be pushed to consumer
+  endpoints via webhooks.
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+tags:
+- Geospatial
+- Earth Observation
+- Satellite Imagery
+- Remote Sensing
+- STAC
+- Tasking
+- Catalog
+- Airbus
+created: '2026-07-04'
+modified: '2026-07-04'
+specificationVersion: '0.19'
+apis:
+- aid: up42:up42-catalog-api
+  name: UP42 Catalog API
+  tags:
+  - Catalog
+  - Archive
+  - Search
+  - STAC
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.up42.com/developers/api-catalog
+  baseURL: https://api.up42.com
+  properties:
+  - url: https://docs.up42.com/developers/api-catalog
+    type: Documentation
+  - url: https://developer.up42.com/reference/overview
+    type: APIReference
+  - url: openapi/up42-openapi.yml
+    type: OpenAPI
+  - url: collections/up42.postman_collection.json
+    type: PostmanCollection
+  - url: collections/up42.opencollection.json
+    type: OpenCollection
+  description: Search the UP42 archive of previously captured satellite and aerial
+    imagery. List geospatial collections, run STAC searches against a host's
+    catalog, and retrieve quicklook and thumbnail previews before placing an order
+    for immediate delivery.
+- aid: up42:up42-tasking-api
+  name: UP42 Tasking API
+  tags:
+  - Tasking
+  - Acquisition
+  - Feasibility
+  - Quotations
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.up42.com/developers/api-tasking
+  baseURL: https://api.up42.com
+  properties:
+  - url: https://docs.up42.com/developers/api-tasking
+    type: Documentation
+  - url: https://developer.up42.com/reference/overview
+    type: APIReference
+  - url: openapi/up42-openapi.yml
+    type: OpenAPI
+  description: Commission new satellite acquisitions on demand. List tasking
+    collections and opportunities, request feasibility studies, review and accept
+    quotations, and create tasking orders scoped to a workspace and area of
+    interest.
+- aid: up42:up42-orders-api
+  name: UP42 Orders API
+  tags:
+  - Orders
+  - Estimate
+  - Fulfillment
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.up42.com/developers/api
+  baseURL: https://api.up42.com
+  properties:
+  - url: https://docs.up42.com/developers/api
+    type: Documentation
+  - url: https://developer.up42.com/reference/overview
+    type: APIReference
+  - url: openapi/up42-openapi.yml
+    type: OpenAPI
+  description: Estimate, place, and track catalog and tasking orders. Get a JSON
+    schema for an order form, estimate the credit cost, create an order under a
+    workspace, list and retrieve orders, update or cancel an order, and inspect
+    order coverage.
+- aid: up42:up42-storage-assets-api
+  name: UP42 Storage Assets API
+  tags:
+  - Storage
+  - Assets
+  - Download
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.up42.com/developers/api-assets
+  baseURL: https://api.up42.com
+  properties:
+  - url: https://docs.up42.com/developers/api-assets
+    type: Documentation
+  - url: https://developer.up42.com/reference/overview
+    type: APIReference
+  - url: openapi/up42-openapi.yml
+    type: OpenAPI
+  description: List and retrieve the geospatial assets produced by completed catalog
+    and tasking orders, inspect asset and STAC item metadata, and generate a
+    pre-signed download URL to fetch the underlying files without additional
+    authentication.
+- aid: up42:up42-stac-data-management-api
+  name: UP42 STAC Data Management API
+  tags:
+  - STAC
+  - Data Management
+  - Collections
+  - Items
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.up42.com/developers/api-stac
+  baseURL: https://api.up42.com
+  properties:
+  - url: https://docs.up42.com/developers/api-stac
+    type: Documentation
+  - url: https://developer.up42.com/reference/overview
+    type: APIReference
+  - url: openapi/up42-openapi.yml
+    type: OpenAPI
+  description: A STAC-compliant (SpatioTemporal Asset Catalog) view of everything in
+    your UP42 storage. Browse the STAC landing page and conformance, list and get
+    STAC collections and items, update item titles and tags, discover queryables,
+    and run a cross-storage STAC search.
+- aid: up42:up42-processing-api
+  name: UP42 Processing API
+  tags:
+  - Processing
+  - Analytics
+  - Jobs
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.up42.com/processing/getting-started
+  baseURL: https://api.up42.com
+  properties:
+  - url: https://docs.up42.com/processing/getting-started
+    type: Documentation
+  - url: https://developer.up42.com/reference/overview
+    type: APIReference
+  - url: openapi/up42-openapi.yml
+    type: OpenAPI
+  description: Run advanced analytics and processing over geospatial assets in
+    storage. List available processes, evaluate the cost and validity of a process
+    against inputs, execute a process, and list and track the resulting processing
+    jobs.
+- aid: up42:up42-webhooks-api
+  name: UP42 Webhooks API
+  tags:
+  - Webhooks
+  - Events
+  - Notifications
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.up42.com/help/webhooks
+  baseURL: https://api.up42.com
+  properties:
+  - url: https://docs.up42.com/help/webhooks
+    type: Documentation
+  - url: https://developer.up42.com/reference/overview
+    type: APIReference
+  - url: openapi/up42-openapi.yml
+    type: OpenAPI
+  description: Register HTTPS webhook endpoints that UP42 calls when order and job
+    status changes occur. Create, list, get, update, and delete webhooks, list the
+    available event types, and test a webhook with a sample payload. Server-to-
+    endpoint HTTP callbacks, not a bidirectional WebSocket.
+- aid: up42:up42-workspaces-account-api
+  name: UP42 Workspaces and Account API
+  tags:
+  - Workspaces
+  - Account
+  - Budgets
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.up42.com/developers/api
+  baseURL: https://api.up42.com
+  properties:
+  - url: https://docs.up42.com/developers/api
+    type: Documentation
+  - url: https://developer.up42.com/reference/overview
+    type: APIReference
+  - url: openapi/up42-openapi.yml
+    type: OpenAPI
+  description: Read account and workspace context used across the platform. Retrieve
+    the authenticated account, list workspaces, and (for enterprise accounts)
+    inspect budgets that cap credit spend. Workspace IDs scope ordering, storage,
+    and processing calls.
+common:
+- type: GitHubOrganization
+  url: https://github.com/up42
+- type: LinkedIn
+  url: https://www.linkedin.com/company/up42
+- type: Website
+  url: https://up42.com
+- type: Documentation
+  url: https://docs.up42.com
+- type: Plans
+  url: plans/up42-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/up42-rate-limits.yml
+- type: FinOps
+  url: finops/up42-finops.yml
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

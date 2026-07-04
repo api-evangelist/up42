@@ -1,0 +1,146 @@
+specification: API Commons Plans
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
+provider: UP42
+providerId: up42
+created: '2026-07-04'
+modified: '2026-07-04'
+reconciled: false
+tags:
+- Geospatial
+- Earth Observation
+- Satellite Imagery
+- Credits
+- Plans
+description: >-
+  UP42 is priced on a prepaid credit model rather than API request tiers. You buy
+  UP42 credits (100 credits = 1 EUR; equivalently 1 credit = EUR 0.01) and spend
+  them on data and analytics. Credits are valid for two years from purchase. The
+  API itself is free to call - you only pay for what you order. Archive (catalog)
+  imagery is charged per selected area of interest (per km2, with per-collection
+  minimums) and is available for immediate purchase; tasking (new acquisitions) is
+  quoted per project after a feasibility study and paid in credits when the
+  quotation is accepted; processing/analytics is charged by the spatial extent of
+  the selected STAC item. Volume, platform, and self-service enterprise
+  arrangements are handled through UP42 sales. Exact per-collection and per-km2
+  rates vary by data provider and are not reconciled here.
+notes: >-
+  Per-km2 and per-collection prices depend on the data provider (Airbus, Pleiades
+  Neo, and many third-party hosts) and resolution, and are surfaced by the
+  estimate-order endpoint. Verify current credit rates and minimums on the UP42
+  pricing page during reconciliation.
+sources:
+- https://up42.com/pricing
+- https://docs.up42.com/getting-started/credits/pricing
+- https://docs.up42.com/developers/api
+plans:
+- id: up42-credits-payg
+  name: Pay-As-You-Go Credits
+  type: usage
+  description: >-
+    Prepaid UP42 credits spent on catalog data, tasking, storage, and processing.
+    100 credits = 1 EUR. No subscription; the API is free to call and you pay only
+    for the data and analytics you order.
+  entries:
+  - label: Credit Value
+    name: credit_value
+    type: unit
+    metric: credits
+    limit: -1
+    timeFrame: null
+    geo: global
+    unit: 100
+    price: EUR 1.00 per 100 credits (credits valid 2 years)
+    userMultiplied: false
+  elements:
+  - name: Catalog Archive Access
+  - name: Tasking
+  - name: STAC Storage
+  - name: Processing and Analytics
+  - name: Webhooks
+- id: up42-catalog-archive
+  name: Catalog (Archive) Data
+  type: usage
+  description: >-
+    Previously captured archive imagery, purchased immediately and charged per
+    selected area of interest. Per-km2 rate and any minimum order area depend on
+    the collection and data provider.
+  entries:
+  - label: Archive Imagery
+    name: archive_km2
+    type: usage
+    metric: km2
+    limit: -1
+    timeFrame: null
+    geo: global
+    unit: 1
+    price: per-km2 in credits, varies by collection/provider (see estimate order)
+    userMultiplied: false
+  elements:
+  - name: Immediate Delivery
+  - name: Per-Collection Minimums
+- id: up42-tasking
+  name: Tasking (New Acquisitions)
+  type: usage
+  description: >-
+    On-demand new satellite acquisitions. Priced per project via a quotation after
+    a feasibility study; paid in credits (EUR 0.01 = 1 credit) when the quotation
+    is accepted.
+  entries:
+  - label: Tasking Order
+    name: tasking_order
+    type: usage
+    metric: project
+    limit: -1
+    timeFrame: null
+    geo: global
+    unit: 1
+    price: quoted per project in credits after feasibility
+    userMultiplied: false
+  elements:
+  - name: Feasibility Study
+  - name: Quotation
+  - name: Priority and Rush Options
+- id: up42-processing
+  name: Processing and Analytics
+  type: usage
+  description: >-
+    Advanced analytics and processing run over stored assets, charged based on the
+    spatial extent of the selected STAC item.
+  entries:
+  - label: Processing Run
+    name: processing_extent
+    type: usage
+    metric: km2
+    limit: -1
+    timeFrame: null
+    geo: global
+    unit: 1
+    price: credits based on selected spatial extent
+    userMultiplied: false
+  elements:
+  - name: Cost Evaluation Before Run
+- id: up42-enterprise
+  name: Enterprise / Platform
+  type: enterprise
+  description: >-
+    Volume credit purchasing, platform integration, budgets to cap spend, and
+    negotiated terms for high-volume or embedded use. Contact UP42.
+  entries:
+  - label: Enterprise Agreement
+    name: enterprise
+    type: flat
+    metric: contract
+    limit: -1
+    timeFrame: year
+    geo: global
+    unit: 1
+    price: contact sales
+    userMultiplied: false
+  elements:
+  - name: Volume Credit Discounts
+  - name: Budgets and Spend Controls
+  - name: Support and SLAs
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

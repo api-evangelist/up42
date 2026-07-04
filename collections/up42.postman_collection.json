@@ -1,0 +1,339 @@
+{
+  "info": {
+    "name": "UP42 API",
+    "description": "Programmatic access to the UP42 geospatial marketplace and developer platform (operated by Airbus Defence and Space): Catalog (archive search), Tasking (new acquisitions), Orders, Storage Assets, STAC data management, Processing, and Webhooks. Base URL: https://api.up42.com. Authenticate with an OAuth2 Bearer access token obtained from a UP42 API key or account credentials via https://auth.up42.com/realms/public/protocol/openid-connect/token (client_id up42-api); tokens live ~5 minutes.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      { "key": "token", "value": "{{accessToken}}", "type": "string" }
+    ]
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "https://api.up42.com", "type": "string" },
+    { "key": "accessToken", "value": "", "type": "string" },
+    { "key": "workspaceId", "value": "", "type": "string" },
+    { "key": "dataProductId", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Catalog",
+      "item": [
+        {
+          "name": "Get geospatial collections",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/v2/collections", "host": ["{{baseUrl}}"], "path": ["v2", "collections"] },
+            "description": "Returns the list of geospatial collections available on UP42 (archive and tasking)."
+          }
+        },
+        {
+          "name": "Get a geospatial collection",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/v2/collections/:collection", "host": ["{{baseUrl}}"], "path": ["v2", "collections", ":collection"], "variable": [{ "key": "collection", "value": "" }] },
+            "description": "Retrieves a single geospatial collection by its unique name."
+          }
+        },
+        {
+          "name": "Search the catalog by host",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"collections\": [\"phr\"],\n  \"intersects\": {\"type\": \"Point\", \"coordinates\": [13.4, 52.5]},\n  \"datetime\": \"2024-01-01T00:00:00Z/..\",\n  \"limit\": 10\n}" },
+            "url": { "raw": "{{baseUrl}}/catalog/hosts/:host/stac/search", "host": ["{{baseUrl}}"], "path": ["catalog", "hosts", ":host", "stac", "search"], "variable": [{ "key": "host", "value": "oneatlas" }] },
+            "description": "Runs a STAC search against a host's archive catalog."
+          }
+        },
+        {
+          "name": "Get a quicklook",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/catalog/:provider/image/:imageId/quicklook", "host": ["{{baseUrl}}"], "path": ["catalog", ":provider", "image", ":imageId", "quicklook"], "variable": [{ "key": "provider", "value": "" }, { "key": "imageId", "value": "" }] },
+            "description": "Returns a low-resolution quicklook preview image for an archive scene."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tasking",
+      "item": [
+        {
+          "name": "Get feasibility studies",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/v2/tasking/feasibility?workspaceId={{workspaceId}}", "host": ["{{baseUrl}}"], "path": ["v2", "tasking", "feasibility"], "query": [{ "key": "workspaceId", "value": "{{workspaceId}}" }] },
+            "description": "Lists tasking feasibility studies for your workspace."
+          }
+        },
+        {
+          "name": "Choose a feasibility option",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"acceptedOption\": \"\"\n}" },
+            "url": { "raw": "{{baseUrl}}/v2/tasking/feasibility/:feasibilityId", "host": ["{{baseUrl}}"], "path": ["v2", "tasking", "feasibility", ":feasibilityId"], "variable": [{ "key": "feasibilityId", "value": "" }] },
+            "description": "Accepts one of the options returned by a tasking feasibility study."
+          }
+        },
+        {
+          "name": "Get quotations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/v2/tasking/quotations?workspaceId={{workspaceId}}", "host": ["{{baseUrl}}"], "path": ["v2", "tasking", "quotations"], "query": [{ "key": "workspaceId", "value": "{{workspaceId}}" }] },
+            "description": "Lists tasking quotations awaiting a decision."
+          }
+        },
+        {
+          "name": "Accept or decline a quotation",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"decision\": \"ACCEPTED\"\n}" },
+            "url": { "raw": "{{baseUrl}}/v2/tasking/quotations/:quotationId", "host": ["{{baseUrl}}"], "path": ["v2", "tasking", "quotations", ":quotationId"], "variable": [{ "key": "quotationId", "value": "" }] },
+            "description": "Accepts or declines a tasking quotation."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Orders",
+      "item": [
+        {
+          "name": "Get a JSON schema of an order form",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/v2/orders/schema?dataProductId={{dataProductId}}", "host": ["{{baseUrl}}"], "path": ["v2", "orders", "schema"], "query": [{ "key": "dataProductId", "value": "{{dataProductId}}" }] },
+            "description": "Returns the JSON schema describing the parameters required to place an order."
+          }
+        },
+        {
+          "name": "Estimate the cost of an order",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"dataProduct\": \"\",\n  \"params\": {}\n}" },
+            "url": { "raw": "{{baseUrl}}/v2/orders/estimate", "host": ["{{baseUrl}}"], "path": ["v2", "orders", "estimate"] },
+            "description": "Estimates the credit cost of an order before it is placed."
+          }
+        },
+        {
+          "name": "Create an order",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"dataProduct\": \"\",\n  \"params\": {}\n}" },
+            "url": { "raw": "{{baseUrl}}/v2/orders?workspaceId={{workspaceId}}", "host": ["{{baseUrl}}"], "path": ["v2", "orders"], "query": [{ "key": "workspaceId", "value": "{{workspaceId}}" }] },
+            "description": "Places a catalog or tasking order under a workspace (workspaceId is required)."
+          }
+        },
+        {
+          "name": "Get orders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/v2/orders?workspaceId={{workspaceId}}", "host": ["{{baseUrl}}"], "path": ["v2", "orders"], "query": [{ "key": "workspaceId", "value": "{{workspaceId}}" }] },
+            "description": "Lists orders, optionally filtered by workspace and status."
+          }
+        },
+        {
+          "name": "Get an order",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/v2/orders/:orderId", "host": ["{{baseUrl}}"], "path": ["v2", "orders", ":orderId"], "variable": [{ "key": "orderId", "value": "" }] },
+            "description": "Retrieves a single order by its ID, including its current status."
+          }
+        },
+        {
+          "name": "Cancel an order",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/v2/orders/:orderId/cancel", "host": ["{{baseUrl}}"], "path": ["v2", "orders", ":orderId", "cancel"], "variable": [{ "key": "orderId", "value": "" }] },
+            "description": "Cancels an order that is still in a cancellable state."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Storage Assets",
+      "item": [
+        {
+          "name": "Get assets",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/v2/assets?workspaceId={{workspaceId}}", "host": ["{{baseUrl}}"], "path": ["v2", "assets"], "query": [{ "key": "workspaceId", "value": "{{workspaceId}}" }] },
+            "description": "Lists the geospatial assets in your storage from completed orders."
+          }
+        },
+        {
+          "name": "Get an asset",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/v2/assets/:assetId", "host": ["{{baseUrl}}"], "path": ["v2", "assets", ":assetId"], "variable": [{ "key": "assetId", "value": "" }] },
+            "description": "Retrieves metadata for a single asset by its ID."
+          }
+        },
+        {
+          "name": "Create a download URL",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/v2/assets/:assetId/download-url", "host": ["{{baseUrl}}"], "path": ["v2", "assets", ":assetId", "download-url"], "variable": [{ "key": "assetId", "value": "" }] },
+            "description": "Generates a short-lived pre-signed URL to download an asset's files."
+          }
+        }
+      ]
+    },
+    {
+      "name": "STAC Data Management",
+      "item": [
+        {
+          "name": "Get the STAC landing page",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/v2/sas", "host": ["{{baseUrl}}"], "path": ["v2", "sas"] },
+            "description": "Returns the STAC API landing page for your storage."
+          }
+        },
+        {
+          "name": "Get STAC collections",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/v2/sas/collections", "host": ["{{baseUrl}}"], "path": ["v2", "sas", "collections"] },
+            "description": "Lists all STAC collections in your storage."
+          }
+        },
+        {
+          "name": "Get a STAC collection",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/v2/sas/collections/:collectionId", "host": ["{{baseUrl}}"], "path": ["v2", "sas", "collections", ":collectionId"], "variable": [{ "key": "collectionId", "value": "" }] },
+            "description": "Retrieves a single STAC collection by its ID."
+          }
+        },
+        {
+          "name": "Get STAC items",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/v2/sas/collections/:collectionId/items", "host": ["{{baseUrl}}"], "path": ["v2", "sas", "collections", ":collectionId", "items"], "variable": [{ "key": "collectionId", "value": "" }] },
+            "description": "Lists all STAC items in a collection."
+          }
+        },
+        {
+          "name": "Update a STAC item",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"\",\n  \"tags\": []\n}" },
+            "url": { "raw": "{{baseUrl}}/v2/sas/collections/:collectionId/items/:itemId", "host": ["{{baseUrl}}"], "path": ["v2", "sas", "collections", ":collectionId", "items", ":itemId"], "variable": [{ "key": "collectionId", "value": "" }, { "key": "itemId", "value": "" }] },
+            "description": "Updates the title or tags of a STAC item."
+          }
+        },
+        {
+          "name": "Search for STAC items",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"collections\": [],\n  \"limit\": 10\n}" },
+            "url": { "raw": "{{baseUrl}}/v2/sas/search", "host": ["{{baseUrl}}"], "path": ["v2", "sas", "search"] },
+            "description": "Runs a STAC search across all STAC items in your storage."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Processing",
+      "item": [
+        {
+          "name": "Get available processes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/v2/processing/processes", "host": ["{{baseUrl}}"], "path": ["v2", "processing", "processes"] },
+            "description": "Lists the processing/analytics operations available to run over stored assets."
+          }
+        },
+        {
+          "name": "Get processing jobs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/v2/processing/jobs?workspaceId={{workspaceId}}", "host": ["{{baseUrl}}"], "path": ["v2", "processing", "jobs"], "query": [{ "key": "workspaceId", "value": "{{workspaceId}}" }] },
+            "description": "Lists processing jobs and their status."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Webhooks",
+      "item": [
+        {
+          "name": "Get webhooks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/v2/webhooks", "host": ["{{baseUrl}}"], "path": ["v2", "webhooks"] },
+            "description": "Lists the webhooks registered for your account."
+          }
+        },
+        {
+          "name": "Create a webhook",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"my-webhook\",\n  \"url\": \"https://example.com/up42\",\n  \"events\": [\"order.status\"],\n  \"secret\": \"\",\n  \"active\": true\n}" },
+            "url": { "raw": "{{baseUrl}}/v2/webhooks", "host": ["{{baseUrl}}"], "path": ["v2", "webhooks"] },
+            "description": "Registers a new webhook for order and job status events."
+          }
+        },
+        {
+          "name": "Get webhook events",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/v2/webhooks/events", "host": ["{{baseUrl}}"], "path": ["v2", "webhooks", "events"] },
+            "description": "Lists the event types a webhook can subscribe to."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Workspaces & Account",
+      "item": [
+        {
+          "name": "Get the authenticated account",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/v2/account", "host": ["{{baseUrl}}"], "path": ["v2", "account"] },
+            "description": "Returns the account associated with the current access token."
+          }
+        },
+        {
+          "name": "Get workspaces",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/v2/workspaces", "host": ["{{baseUrl}}"], "path": ["v2", "workspaces"] },
+            "description": "Lists the workspaces available to the account."
+          }
+        }
+      ]
+    }
+  ]
+}

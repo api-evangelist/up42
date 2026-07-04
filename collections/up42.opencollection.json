@@ -1,0 +1,285 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "UP42 API",
+    "version": "2.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{accessToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": { "name": "Catalog", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Get geospatial collections.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.up42.com/v2/collections" },
+          "docs": "Returns the list of geospatial collections available on UP42 (archive and tasking)."
+        },
+        {
+          "info": { "name": "Get a geospatial collection.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://api.up42.com/v2/collections/:collection",
+            "params": [
+              { "name": "collection", "value": "", "type": "path", "description": "The unique collection name." }
+            ]
+          },
+          "docs": "Retrieves a single geospatial collection by its unique name."
+        },
+        {
+          "info": { "name": "Search the catalog by host.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://api.up42.com/catalog/hosts/:host/stac/search",
+            "params": [
+              { "name": "host", "value": "oneatlas", "type": "path", "description": "The catalog host to search." }
+            ],
+            "body": { "type": "json", "data": "{\n  \"collections\": [\"phr\"],\n  \"intersects\": {\"type\": \"Point\", \"coordinates\": [13.4, 52.5]},\n  \"datetime\": \"2024-01-01T00:00:00Z/..\",\n  \"limit\": 10\n}" }
+          },
+          "docs": "Runs a STAC search against a host's archive catalog."
+        },
+        {
+          "info": { "name": "Get a quicklook.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://api.up42.com/catalog/:provider/image/:imageId/quicklook",
+            "params": [
+              { "name": "provider", "value": "", "type": "path", "description": "The data provider." },
+              { "name": "imageId", "value": "", "type": "path", "description": "The archive image ID." }
+            ]
+          },
+          "docs": "Returns a low-resolution quicklook preview image for an archive scene."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Tasking", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Get feasibility studies.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.up42.com/v2/tasking/feasibility?workspaceId={{workspaceId}}" },
+          "docs": "Lists tasking feasibility studies for your workspace."
+        },
+        {
+          "info": { "name": "Choose a feasibility option.", "type": "http" },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.up42.com/v2/tasking/feasibility/:feasibilityId",
+            "params": [
+              { "name": "feasibilityId", "value": "", "type": "path", "description": "The feasibility study ID." }
+            ],
+            "body": { "type": "json", "data": "{\n  \"acceptedOption\": \"\"\n}" }
+          },
+          "docs": "Accepts one of the options returned by a tasking feasibility study."
+        },
+        {
+          "info": { "name": "Get quotations.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.up42.com/v2/tasking/quotations?workspaceId={{workspaceId}}" },
+          "docs": "Lists tasking quotations awaiting a decision."
+        },
+        {
+          "info": { "name": "Accept or decline a quotation.", "type": "http" },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.up42.com/v2/tasking/quotations/:quotationId",
+            "params": [
+              { "name": "quotationId", "value": "", "type": "path", "description": "The quotation ID." }
+            ],
+            "body": { "type": "json", "data": "{\n  \"decision\": \"ACCEPTED\"\n}" }
+          },
+          "docs": "Accepts or declines a tasking quotation."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Orders", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Get a JSON schema of an order form.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.up42.com/v2/orders/schema?dataProductId={{dataProductId}}" },
+          "docs": "Returns the JSON schema describing the parameters required to place an order."
+        },
+        {
+          "info": { "name": "Estimate the cost of an order.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://api.up42.com/v2/orders/estimate",
+            "body": { "type": "json", "data": "{\n  \"dataProduct\": \"\",\n  \"params\": {}\n}" }
+          },
+          "docs": "Estimates the credit cost of an order before it is placed."
+        },
+        {
+          "info": { "name": "Create an order.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://api.up42.com/v2/orders?workspaceId={{workspaceId}}",
+            "body": { "type": "json", "data": "{\n  \"dataProduct\": \"\",\n  \"params\": {}\n}" }
+          },
+          "docs": "Places a catalog or tasking order under a workspace (workspaceId is required)."
+        },
+        {
+          "info": { "name": "Get orders.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.up42.com/v2/orders?workspaceId={{workspaceId}}" },
+          "docs": "Lists orders, optionally filtered by workspace and status."
+        },
+        {
+          "info": { "name": "Get an order.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://api.up42.com/v2/orders/:orderId",
+            "params": [
+              { "name": "orderId", "value": "", "type": "path", "description": "The order ID." }
+            ]
+          },
+          "docs": "Retrieves a single order by its ID, including its current status."
+        },
+        {
+          "info": { "name": "Cancel an order.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://api.up42.com/v2/orders/:orderId/cancel",
+            "params": [
+              { "name": "orderId", "value": "", "type": "path", "description": "The order ID." }
+            ]
+          },
+          "docs": "Cancels an order that is still in a cancellable state."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Storage Assets", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Get assets.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.up42.com/v2/assets?workspaceId={{workspaceId}}" },
+          "docs": "Lists the geospatial assets in your storage from completed orders."
+        },
+        {
+          "info": { "name": "Get an asset.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://api.up42.com/v2/assets/:assetId",
+            "params": [
+              { "name": "assetId", "value": "", "type": "path", "description": "The asset ID." }
+            ]
+          },
+          "docs": "Retrieves metadata for a single asset by its ID."
+        },
+        {
+          "info": { "name": "Create a download URL.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://api.up42.com/v2/assets/:assetId/download-url",
+            "params": [
+              { "name": "assetId", "value": "", "type": "path", "description": "The asset ID." }
+            ]
+          },
+          "docs": "Generates a short-lived pre-signed URL to download an asset's files."
+        }
+      ]
+    },
+    {
+      "info": { "name": "STAC Data Management", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Get the STAC landing page.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.up42.com/v2/sas" },
+          "docs": "Returns the STAC API landing page for your storage."
+        },
+        {
+          "info": { "name": "Get STAC collections.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.up42.com/v2/sas/collections" },
+          "docs": "Lists all STAC collections in your storage."
+        },
+        {
+          "info": { "name": "Get a STAC collection.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://api.up42.com/v2/sas/collections/:collectionId",
+            "params": [
+              { "name": "collectionId", "value": "", "type": "path", "description": "The STAC collection ID." }
+            ]
+          },
+          "docs": "Retrieves a single STAC collection by its ID."
+        },
+        {
+          "info": { "name": "Get STAC items.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://api.up42.com/v2/sas/collections/:collectionId/items",
+            "params": [
+              { "name": "collectionId", "value": "", "type": "path", "description": "The STAC collection ID." }
+            ]
+          },
+          "docs": "Lists all STAC items in a collection."
+        },
+        {
+          "info": { "name": "Update a STAC item.", "type": "http" },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.up42.com/v2/sas/collections/:collectionId/items/:itemId",
+            "params": [
+              { "name": "collectionId", "value": "", "type": "path", "description": "The STAC collection ID." },
+              { "name": "itemId", "value": "", "type": "path", "description": "The STAC item ID." }
+            ],
+            "body": { "type": "json", "data": "{\n  \"title\": \"\",\n  \"tags\": []\n}" }
+          },
+          "docs": "Updates the title or tags of a STAC item."
+        },
+        {
+          "info": { "name": "Search for STAC items.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://api.up42.com/v2/sas/search",
+            "body": { "type": "json", "data": "{\n  \"collections\": [],\n  \"limit\": 10\n}" }
+          },
+          "docs": "Runs a STAC search across all STAC items in your storage."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Webhooks", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Get webhooks.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.up42.com/v2/webhooks" },
+          "docs": "Lists the webhooks registered for your account."
+        },
+        {
+          "info": { "name": "Create a webhook.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://api.up42.com/v2/webhooks",
+            "body": { "type": "json", "data": "{\n  \"name\": \"my-webhook\",\n  \"url\": \"https://example.com/up42\",\n  \"events\": [\"order.status\"],\n  \"secret\": \"\",\n  \"active\": true\n}" }
+          },
+          "docs": "Registers a new webhook for order and job status events."
+        },
+        {
+          "info": { "name": "Get webhook events.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.up42.com/v2/webhooks/events" },
+          "docs": "Lists the event types a webhook can subscribe to."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Workspaces & Account", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Get the authenticated account.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.up42.com/v2/account" },
+          "docs": "Returns the account associated with the current access token."
+        },
+        {
+          "info": { "name": "Get workspaces.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.up42.com/v2/workspaces" },
+          "docs": "Lists the workspaces available to the account."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

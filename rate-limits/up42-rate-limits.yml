@@ -1,0 +1,64 @@
+specification: API Commons Rate Limits
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
+provider: UP42
+providerId: up42
+created: '2026-07-04'
+modified: '2026-07-04'
+reconciled: false
+tags:
+- Geospatial
+- Earth Observation
+- Satellite Imagery
+- Rate Limiting
+- Quotas
+description: >-
+  UP42 does not publish fixed numeric per-endpoint rate limits for the REST API.
+  The practical governor on usage is the prepaid credit balance and, for
+  enterprise accounts, budgets that cap credit spend rather than a per-minute
+  request cap. Access tokens are short-lived (about 5 minutes), so clients must
+  refresh tokens frequently and cache them for their lifetime. Long-running
+  operations (tasking acquisitions, large orders, processing jobs) are
+  asynchronous - clients poll order/job status or subscribe to webhooks rather
+  than holding open a request. Callers should implement backoff on 429 responses.
+notes: >-
+  Numeric request-rate limits are not documented as of the review date. Treat the
+  credit balance and enterprise budgets as the effective quota, refresh the 5-minute
+  access token proactively, and honor Retry-After on 429 responses.
+sources:
+- https://docs.up42.com/developers/api
+- https://docs.up42.com/getting-started/credits/pricing
+- https://up42.com/pricing
+responseCodes:
+  throttled: 429
+limits:
+- name: REST API Requests
+  scope: account
+  metric: requests
+  limit: not published
+  notes: No fixed numeric request-rate limit is documented for the api.up42.com REST API.
+- name: Credit Balance
+  metric: credits
+  scope: account
+  limit: prepaid balance
+  notes: Effective quota on orders/processing is the prepaid credit balance (100 credits = 1 EUR).
+- name: Enterprise Budgets
+  metric: credits
+  scope: workspace
+  limit: per budget
+  notes: Enterprise accounts can define budgets that cap credit spend per workspace.
+- name: Access Token Lifetime
+  metric: seconds
+  scope: token
+  limit: '~300'
+  notes: Access tokens are valid for roughly 5 minutes and must be refreshed.
+policies:
+- name: Token Refresh
+  description: Cache the OAuth2 access token for its ~5 minute lifetime and refresh before expiry rather than requesting a new token per call.
+- name: Asynchronous Polling
+  description: Tasking, ordering, and processing are asynchronous; poll order/job status or use webhooks instead of blocking on a single request.
+- name: Backoff Strategy
+  description: Implement exponential backoff with jitter and honor Retry-After on 429 responses.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

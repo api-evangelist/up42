@@ -1,0 +1,154 @@
+aid: up42
+name: UP42
+review:
+  question: Does UP42 expose a documented public WebSocket API?
+  answer: false
+  date: '2026-07-04'
+  reviewer: API Evangelist
+  asyncapiSpecCreated: false
+  asyncapiScopeNote: |
+    No AsyncAPI document was authored. UP42's public API surface at
+    https://api.up42.com is request/response REST over HTTPS. There is no
+    server-push transport (WebSocket or SSE) on UP42's own API to model.
+    Asynchronous work - tasking acquisitions, catalog/tasking order
+    fulfillment, and processing jobs - is tracked either by polling order/job
+    status endpoints or by registering HTTPS webhooks that UP42 calls on
+    order.status / job.status changes. Those webhooks are outbound
+    server-to-endpoint HTTP callbacks, not a bidirectional WebSocket, so they
+    are documented as REST resources rather than an AsyncAPI channel.
+findings:
+  summary: |
+    UP42 does not publish a documented public WebSocket API. UP42 is a
+    geospatial marketplace and developer platform for Earth observation data
+    and analytics, operated by Airbus Defence and Space. Its documented public
+    API is a REST API at https://api.up42.com, authenticated with an OAuth2
+    Bearer access token obtained from a UP42 API key or account credentials via
+    the UP42 auth server
+    (https://auth.up42.com/realms/public/protocol/openid-connect/token,
+    client_id up42-api). Access tokens are short-lived (~5 minutes). The API
+    covers Catalog (archive search over STAC), Tasking (new acquisitions,
+    feasibility, quotations), Orders (estimate/create/track), Storage Assets
+    (list/download), a STAC-compliant data management surface (/v2/sas/...),
+    Processing/analytics, and Webhooks. Long-running work is asynchronous and is
+    observed by polling status or via outbound HTTPS webhooks. No realtime,
+    bidirectional, or streaming WebSocket (ws:// or wss://) endpoint is
+    documented on UP42's API.
+  openSource: |
+    UP42's platform/API is proprietary (operated by Airbus Defence and Space),
+    but UP42 publishes an official open-source Python SDK and example
+    repositories on GitHub (github.com/up42), including up42-py and
+    up42-webhooks. The SDK wraps the same REST API documented here and is a
+    common way to script catalog search, ordering, storage, and webhooks.
+  transports:
+    - protocol: REST
+      scheme: https
+      baseURL: https://api.up42.com
+      documented: true
+      note: The full public API - Catalog, Tasking, Orders, Storage Assets, STAC (/v2/sas), Processing, Webhooks, Workspaces.
+    - protocol: OAuth2 Token
+      scheme: https
+      baseURL: https://auth.up42.com/realms/public/protocol/openid-connect/token
+      documented: true
+      note: Keycloak token endpoint (client_id up42-api). Exchange an API key or account credentials for a ~5 minute Bearer access token.
+    - protocol: Webhook
+      scheme: https
+      documented: true
+      note: UP42 POSTs order.status / job.status events to a registered HTTPS endpoint with a signed payload. Outbound HTTP callback, not WebSocket.
+    - protocol: WebSocket
+      scheme: wss
+      documented: false
+      note: No WebSocket endpoint is documented anywhere in the UP42 API reference or docs as of the review date.
+  endpointsConfirmedRest:
+    - POST   https://api.up42.com/v2/orders?workspaceId={workspaceId}
+    - GET    https://api.up42.com/v2/assets
+    - POST   https://api.up42.com/v2/assets/{assetId}/download-url
+    - GET    https://api.up42.com/v2/sas
+    - GET    https://api.up42.com/v2/sas/collections
+    - GET    https://api.up42.com/v2/sas/collections/{collectionId}
+    - DELETE https://api.up42.com/v2/sas/collections/{collectionId}
+    - GET    https://api.up42.com/v2/sas/collections/{collectionId}/items
+    - GET    https://api.up42.com/v2/sas/collections/{collectionId}/items/{itemId}
+    - PATCH  https://api.up42.com/v2/sas/collections/{collectionId}/items/{itemId}
+    - GET    https://api.up42.com/v2/sas/queryables
+    - POST   https://api.up42.com/v2/sas/search
+  endpointsModeledRest:
+    - GET    https://api.up42.com/v2/collections
+    - GET    https://api.up42.com/v2/collections/{collection}
+    - POST   https://api.up42.com/catalog/hosts/{host}/stac/search
+    - GET    https://api.up42.com/catalog/{provider}/image/{imageId}/quicklook
+    - GET    https://api.up42.com/v2/tasking/feasibility
+    - PATCH  https://api.up42.com/v2/tasking/feasibility/{feasibilityId}
+    - GET    https://api.up42.com/v2/tasking/quotations
+    - PATCH  https://api.up42.com/v2/tasking/quotations/{quotationId}
+    - GET    https://api.up42.com/v2/tasking/orders/opportunities
+    - GET    https://api.up42.com/v2/orders/schema
+    - POST   https://api.up42.com/v2/orders/estimate
+    - GET    https://api.up42.com/v2/orders
+    - GET    https://api.up42.com/v2/orders/{orderId}
+    - PATCH  https://api.up42.com/v2/orders/{orderId}
+    - POST   https://api.up42.com/v2/orders/{orderId}/cancel
+    - GET    https://api.up42.com/v2/assets/{assetId}
+    - GET    https://api.up42.com/v2/processing/processes
+    - POST   https://api.up42.com/v2/processing/processes/{processId}/validation
+    - POST   https://api.up42.com/v2/processing/processes/{processId}/execution
+    - GET    https://api.up42.com/v2/processing/jobs
+    - GET    https://api.up42.com/v2/processing/jobs/{jobId}
+    - GET    https://api.up42.com/v2/webhooks
+    - POST   https://api.up42.com/v2/webhooks
+    - GET    https://api.up42.com/v2/webhooks/{webhookId}
+    - PUT    https://api.up42.com/v2/webhooks/{webhookId}
+    - DELETE https://api.up42.com/v2/webhooks/{webhookId}
+    - GET    https://api.up42.com/v2/webhooks/events
+    - GET    https://api.up42.com/v2/account
+    - GET    https://api.up42.com/v2/workspaces
+    - GET    https://api.up42.com/v2/budgets
+  modeledNote: |
+    Confirmed endpoints were verified directly against docs.up42.com /
+    developer.up42.com (the create-order call, the /v2/assets storage surface,
+    and the /v2/sas STAC data-management surface). Modeled endpoints correspond
+    to named operations in the UP42 API reference (e.g. listcollectionsv2,
+    estimatev2order, createv2orderunderworkspace, listtaskingquotation,
+    listwebhooks) whose exact REST path and method were reconstructed from the
+    documentation and the UP42 Python SDK; re-verify these against the live
+    reference during reconciliation.
+  ownership: |
+    UP42 is a subsidiary of Airbus Defence and Space. Its marketplace hosts
+    Airbus data (e.g. Pleiades, Pleiades Neo, SPOT) alongside many third-party
+    data providers.
+sources:
+  - url: https://docs.up42.com/developers/api
+    type: Documentation
+    note: API overview; base host api.up42.com and the workflow across catalog, tasking, orders, storage.
+  - url: https://docs.up42.com/developers/api-catalog
+    type: Documentation
+    note: Catalog collections, search by host, quicklook/thumbnail, order estimate/create.
+  - url: https://docs.up42.com/developers/api-tasking
+    type: Documentation
+    note: Tasking collections, opportunities, feasibility studies, quotations, order creation.
+  - url: https://docs.up42.com/developers/api-assets
+    type: Documentation
+    note: Storage assets, STAC item retrieval, and pre-signed download URLs.
+  - url: https://docs.up42.com/developers/api-stac
+    type: Documentation
+    note: STAC data-management surface under /v2/sas (collections, items, search, queryables).
+  - url: https://docs.up42.com/help/webhooks
+    type: Documentation
+    note: Webhooks for order/job status events; outbound signed HTTPS callbacks, not WebSocket.
+  - url: https://developer.up42.com/reference/overview
+    type: APIReference
+    note: Named operations for catalog, tasking, orders, and webhooks.
+  - url: https://up42.com/pricing
+    type: Pricing
+    note: Prepaid credit model (100 credits = 1 EUR), per-km2 catalog and per-project tasking.
+  - url: https://github.com/up42
+    type: SourceCode
+    note: Official UP42 open-source Python SDK (up42-py) and example repos wrapping the REST API.
+actions:
+  asyncapiPath: null
+  apisYmlUpdated: true
+  reason: |
+    No WebSocket protocol surface exists. UP42's public API is request/response
+    REST at https://api.up42.com, with asynchronous ordering, tasking, and
+    processing observed by polling status or by outbound HTTPS webhooks. No
+    AsyncAPI document was created because there is no server-push transport on
+    UP42's own API to model.

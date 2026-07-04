@@ -1,0 +1,101 @@
+specification: FinOps Framework
+specificationVersion: '1.0'
+schema: https://www.finops.org/framework/
+provider: UP42
+providerId: up42
+created: '2026-07-04'
+modified: '2026-07-04'
+reconciled: false
+tags:
+- Geospatial
+- Earth Observation
+- Satellite Imagery
+- FinOps
+- Cost Management
+- FOCUS
+description: >-
+  FinOps view of UP42 spend. UP42 bills on a prepaid credit model (100 credits =
+  1 EUR; credits valid two years). There is no per-request API fee - cost is
+  driven by what you order: archive (catalog) imagery charged per km2 of the
+  selected area of interest, tasking acquisitions quoted per project, storage of
+  delivered assets, and processing/analytics charged by the spatial extent of the
+  selected STAC item. Because charges accrue at order and processing time,
+  cost control centers on estimating before ordering, scoping the area of interest
+  tightly, and (on enterprise accounts) using budgets to cap credit spend per
+  workspace.
+notes: >-
+  Per-km2 and per-project rates depend on the data provider and collection; verify
+  on the UP42 pricing page and via the estimate-order and process-validation
+  endpoints. UP42 is operated by Airbus Defence and Space.
+sources:
+- https://up42.com/pricing
+- https://docs.up42.com/getting-started/credits/pricing
+- https://docs.up42.com/developers/api
+- https://focus.finops.org/focus-specification/v1-3/
+alignedWith:
+  framework: FinOps Foundation Framework
+  frameworkUrl: https://www.finops.org/framework/
+  dataSpec: FOCUS
+  dataSpecVersion: '1.3'
+  dataSpecUrl: https://focus.finops.org/focus-specification/v1-3/
+publisherName: UP42
+serviceCategory: Geospatial and Earth Observation
+billingModel:
+  pricingCategory: Usage-Based
+  billingFrequency: Prepaid
+  billingCurrency: EUR
+  chargeCategories:
+  - Purchase
+  - Usage
+  - Adjustment
+focusColumns:
+  ServiceName: UP42 Platform
+  ServiceCategory: Geospatial and Earth Observation
+  ProviderName: UP42
+  PublisherName: UP42 (Airbus Defence and Space)
+  InvoiceIssuerName: UP42
+  BillingCurrency: EUR
+  ChargeCategory: Usage
+  PricingCategory: Usage-Based
+meters:
+- name: catalog_area
+  description: Archive imagery ordered, charged per km2 of the selected area of interest.
+  unit: km2
+  aggregation: sum
+  dimensions:
+  - workspace
+  - collection
+  - provider
+- name: tasking_project
+  description: New satellite acquisitions quoted and paid per project in credits.
+  unit: project
+  aggregation: count
+  dimensions:
+  - workspace
+  - collection
+- name: processing_extent
+  description: Processing/analytics runs, charged by the spatial extent of the selected STAC item.
+  unit: km2
+  aggregation: sum
+  dimensions:
+  - workspace
+  - process
+- name: credits_spent
+  description: UP42 credits deducted across catalog, tasking, storage, and processing.
+  unit: credits
+  aggregation: sum
+  dimensions:
+  - workspace
+  - order
+principles:
+- name: Visibility
+  description: Estimate every order and validate every process before running; track credit spend per workspace, collection, and order.
+- name: Allocation
+  description: Scope orders and processing to workspaces so credit spend maps to teams, projects, and cost centers.
+- name: Optimization
+  description: Tighten the area of interest, prefer archive over tasking when timeliness allows, and reuse stored assets and STAC search instead of re-ordering.
+- name: Accountability
+  description: Use enterprise budgets to cap workspace credit spend and assign owners who review credit burn against the prepaid balance.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com
