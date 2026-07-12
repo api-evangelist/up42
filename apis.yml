@@ -195,6 +195,10 @@ apis:
     inspect budgets that cap credit spend. Workspace IDs scope ordering, storage,
     and processing calls.
 common:
+- type: DomainSecurity
+  url: security/up42-domain-security.yml
+- type: Authentication
+  url: authentication/up42-authentication.yml
 - type: GitHubOrganization
   url: https://github.com/up42
 - type: LinkedIn
