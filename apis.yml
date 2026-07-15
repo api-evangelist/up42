@@ -195,6 +195,8 @@ apis:
     inspect budgets that cap credit spend. Workspace IDs scope ordering, storage,
     and processing calls.
 common:
+- type: AgenticAccess
+  url: agentic-access/up42-agentic-access.yml
 - type: DomainSecurity
   url: security/up42-domain-security.yml
 - type: Authentication
