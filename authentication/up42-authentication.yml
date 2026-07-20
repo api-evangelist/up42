@@ -12,6 +12,6 @@ schemes:
   description: 'OAuth2 Bearer access token. Obtain a token from a UP42 API key or account credentials
     via https://auth.up42.com/realms/public/protocol/openid-connect/token (client_id up42-api).
     Access tokens are short-lived (about 5 minutes); refresh as needed. Pass as `Authorization:
-    Bearer YOUR_ACCESS_TOKEN`.'
+    Bearer [example key]`.'
   sources:
   - openapi/up42-openapi.yml
