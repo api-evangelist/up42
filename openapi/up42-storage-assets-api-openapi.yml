@@ -1,0 +1,170 @@
+openapi: 3.0.3
+info:
+  title: UP42 Catalog Storage Assets API
+  description: 'The UP42 API is the programmatic surface of the UP42 geospatial marketplace and developer platform, operated by Airbus Defence and Space. It covers the full Earth observation workflow: searching the archive (Catalog), commissioning new satellite acquisitions (Tasking), estimating/placing/tracking Orders, storing and downloading results as cloud-native Assets, browsing storage through a STAC-compliant data management API, running Processing/analytics, and receiving order and job status changes via Webhooks.
+
+
+    All requests go to https://api.up42.com and are authenticated with an OAuth2 Bearer access token. Access tokens are short-lived (about 5 minutes) and are obtained either from a UP42 API key or from account credentials via the UP42 authentication server (https://auth.up42.com/realms/public/protocol/openid-connect/token, grant_type password or client_credentials, client_id up42-api). Most ordering, storage, and processing operations are scoped to a workspace by its workspaceId.
+
+
+    Endpoint accuracy: paths marked `x-up42-endpoint-status: confirmed` were verified against the UP42 developer documentation (docs.up42.com / developer.up42.com). Paths marked `modeled` are named operations from the UP42 API reference whose exact REST path/method were reconstructed from documentation and the UP42 Python SDK, and should be re-verified against the live reference during reconciliation.'
+  version: '2.0'
+  contact:
+    name: UP42 Support
+    url: https://up42.com/company/contact-us
+  termsOfService: https://up42.com/legal/terms-and-conditions
+servers:
+- url: https://api.up42.com
+  description: UP42 production API
+security:
+- bearerAuth: []
+tags:
+- name: Storage Assets
+  description: List, inspect, and download geospatial assets in storage.
+paths:
+  /v2/assets:
+    get:
+      operationId: listAssets
+      tags:
+      - Storage Assets
+      summary: Get assets
+      description: Lists the geospatial assets in your storage produced by completed catalog and tasking orders. Filter by workspace, collection, producer, and acquisition date.
+      x-up42-endpoint-status: confirmed
+      parameters:
+      - $ref: '#/components/parameters/WorkspaceIdQuery'
+      - name: size
+        in: query
+        required: false
+        description: Page size.
+        schema:
+          type: integer
+          default: 50
+      responses:
+        '200':
+          description: A paged list of assets.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssetList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /v2/assets/{assetId}:
+    parameters:
+    - name: assetId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    get:
+      operationId: getAsset
+      tags:
+      - Storage Assets
+      summary: Get an asset
+      description: Retrieves metadata for a single asset by its ID.
+      x-up42-endpoint-status: modeled
+      responses:
+        '200':
+          description: The requested asset.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Asset'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /v2/assets/{assetId}/download-url:
+    parameters:
+    - name: assetId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    post:
+      operationId: createAssetDownloadUrl
+      tags:
+      - Storage Assets
+      summary: Create a download URL
+      description: Generates a short-lived, pre-signed URL to download an asset's files directly, without additional authentication.
+      x-up42-endpoint-status: confirmed
+      responses:
+        '200':
+          description: A pre-signed download URL.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    type: string
+                    format: uri
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  responses:
+    Unauthorized:
+      description: Missing or invalid access token.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  parameters:
+    WorkspaceIdQuery:
+      name: workspaceId
+      in: query
+      required: false
+      description: The workspace that scopes the request.
+      schema:
+        type: string
+        format: uuid
+  schemas:
+    AssetList:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/Asset'
+    Asset:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        workspaceId:
+          type: string
+          format: uuid
+        contentType:
+          type: string
+        size:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+    Error:
+      type: object
+      properties:
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'OAuth2 Bearer access token. Obtain a token from a UP42 API key or account credentials via https://auth.up42.com/realms/public/protocol/openid-connect/token (client_id up42-api). Access tokens are short-lived (about 5 minutes); refresh as needed. Pass as `Authorization: Bearer YOUR_ACCESS_TOKEN`.'

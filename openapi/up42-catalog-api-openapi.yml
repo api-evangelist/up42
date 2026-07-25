@@ -1,0 +1,256 @@
+openapi: 3.0.3
+info:
+  title: UP42 Catalog API
+  description: 'The UP42 API is the programmatic surface of the UP42 geospatial marketplace and developer platform, operated by Airbus Defence and Space. It covers the full Earth observation workflow: searching the archive (Catalog), commissioning new satellite acquisitions (Tasking), estimating/placing/tracking Orders, storing and downloading results as cloud-native Assets, browsing storage through a STAC-compliant data management API, running Processing/analytics, and receiving order and job status changes via Webhooks.
+
+
+    All requests go to https://api.up42.com and are authenticated with an OAuth2 Bearer access token. Access tokens are short-lived (about 5 minutes) and are obtained either from a UP42 API key or from account credentials via the UP42 authentication server (https://auth.up42.com/realms/public/protocol/openid-connect/token, grant_type password or client_credentials, client_id up42-api). Most ordering, storage, and processing operations are scoped to a workspace by its workspaceId.
+
+
+    Endpoint accuracy: paths marked `x-up42-endpoint-status: confirmed` were verified against the UP42 developer documentation (docs.up42.com / developer.up42.com). Paths marked `modeled` are named operations from the UP42 API reference whose exact REST path/method were reconstructed from documentation and the UP42 Python SDK, and should be re-verified against the live reference during reconciliation.'
+  version: '2.0'
+  contact:
+    name: UP42 Support
+    url: https://up42.com/company/contact-us
+  termsOfService: https://up42.com/legal/terms-and-conditions
+servers:
+- url: https://api.up42.com
+  description: UP42 production API
+security:
+- bearerAuth: []
+tags:
+- name: Catalog
+  description: Search the archive of previously captured imagery.
+paths:
+  /v2/collections:
+    get:
+      operationId: listCollections
+      tags:
+      - Catalog
+      summary: Get geospatial collections
+      description: Returns the list of geospatial collections available on UP42 (both catalog and tasking), each describing a data product, its provider/host, and supported ordering parameters.
+      x-up42-endpoint-status: modeled
+      parameters:
+      - name: type
+        in: query
+        required: false
+        description: Filter collections by ordering type (ARCHIVE or TASKING).
+        schema:
+          type: string
+          enum:
+          - ARCHIVE
+          - TASKING
+      responses:
+        '200':
+          description: A paged list of collections.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectionList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /v2/collections/{collection}:
+    parameters:
+    - name: collection
+      in: path
+      required: true
+      description: The unique name of the collection.
+      schema:
+        type: string
+    get:
+      operationId: getCollection
+      tags:
+      - Catalog
+      summary: Get a geospatial collection
+      description: Retrieves a single geospatial collection by its unique name.
+      x-up42-endpoint-status: modeled
+      responses:
+        '200':
+          description: The requested collection.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Collection'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /catalog/hosts/{host}/stac/search:
+    parameters:
+    - name: host
+      in: path
+      required: true
+      description: The catalog host to search (for example, oneatlas).
+      schema:
+        type: string
+    post:
+      operationId: searchCatalogByHost
+      tags:
+      - Catalog
+      summary: Search the catalog by host
+      description: Runs a STAC search against a host's archive catalog. Filter by collection, area of interest (intersects/bbox), acquisition datetime range, and property queries such as cloud cover, then page through matching scenes.
+      x-up42-endpoint-status: modeled
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StacSearchRequest'
+      responses:
+        '200':
+          description: A STAC FeatureCollection of matching scenes.
+          content:
+            application/geo+json:
+              schema:
+                $ref: '#/components/schemas/StacItemCollection'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /catalog/{provider}/image/{imageId}/quicklook:
+    parameters:
+    - name: provider
+      in: path
+      required: true
+      schema:
+        type: string
+    - name: imageId
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      operationId: getQuicklookImage
+      tags:
+      - Catalog
+      summary: Get a quicklook
+      description: Returns a low-resolution quicklook preview image for an archive scene.
+      x-up42-endpoint-status: modeled
+      responses:
+        '200':
+          description: The quicklook image.
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  schemas:
+    Collection:
+      type: object
+      properties:
+        name:
+          type: string
+        title:
+          type: string
+        type:
+          type: string
+          enum:
+          - ARCHIVE
+          - TASKING
+        producers:
+          type: array
+          items:
+            type: string
+        dataProducts:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+    StacItem:
+      type: object
+      properties:
+        type:
+          type: string
+          default: Feature
+        stac_version:
+          type: string
+        id:
+          type: string
+        collection:
+          type: string
+        geometry:
+          type: object
+          additionalProperties: true
+        bbox:
+          type: array
+          items:
+            type: number
+        properties:
+          type: object
+          additionalProperties: true
+        assets:
+          type: object
+          additionalProperties: true
+    StacItemCollection:
+      type: object
+      properties:
+        type:
+          type: string
+          default: FeatureCollection
+        features:
+          type: array
+          items:
+            $ref: '#/components/schemas/StacItem'
+    CollectionList:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/Collection'
+    StacSearchRequest:
+      type: object
+      properties:
+        collections:
+          type: array
+          items:
+            type: string
+        intersects:
+          type: object
+          description: A GeoJSON geometry to intersect.
+          additionalProperties: true
+        bbox:
+          type: array
+          items:
+            type: number
+        datetime:
+          type: string
+          description: An RFC 3339 datetime or interval.
+        query:
+          type: object
+          description: Property queries such as cloudCoverage.
+          additionalProperties: true
+        limit:
+          type: integer
+          default: 10
+    Error:
+      type: object
+      properties:
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+  responses:
+    Unauthorized:
+      description: Missing or invalid access token.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'OAuth2 Bearer access token. Obtain a token from a UP42 API key or account credentials via https://auth.up42.com/realms/public/protocol/openid-connect/token (client_id up42-api). Access tokens are short-lived (about 5 minutes); refresh as needed. Pass as `Authorization: Bearer YOUR_ACCESS_TOKEN`.'

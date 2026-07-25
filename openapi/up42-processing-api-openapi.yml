@@ -1,0 +1,205 @@
+openapi: 3.0.3
+info:
+  title: UP42 Catalog Processing API
+  description: 'The UP42 API is the programmatic surface of the UP42 geospatial marketplace and developer platform, operated by Airbus Defence and Space. It covers the full Earth observation workflow: searching the archive (Catalog), commissioning new satellite acquisitions (Tasking), estimating/placing/tracking Orders, storing and downloading results as cloud-native Assets, browsing storage through a STAC-compliant data management API, running Processing/analytics, and receiving order and job status changes via Webhooks.
+
+
+    All requests go to https://api.up42.com and are authenticated with an OAuth2 Bearer access token. Access tokens are short-lived (about 5 minutes) and are obtained either from a UP42 API key or from account credentials via the UP42 authentication server (https://auth.up42.com/realms/public/protocol/openid-connect/token, grant_type password or client_credentials, client_id up42-api). Most ordering, storage, and processing operations are scoped to a workspace by its workspaceId.
+
+
+    Endpoint accuracy: paths marked `x-up42-endpoint-status: confirmed` were verified against the UP42 developer documentation (docs.up42.com / developer.up42.com). Paths marked `modeled` are named operations from the UP42 API reference whose exact REST path/method were reconstructed from documentation and the UP42 Python SDK, and should be re-verified against the live reference during reconciliation.'
+  version: '2.0'
+  contact:
+    name: UP42 Support
+    url: https://up42.com/company/contact-us
+  termsOfService: https://up42.com/legal/terms-and-conditions
+servers:
+- url: https://api.up42.com
+  description: UP42 production API
+security:
+- bearerAuth: []
+tags:
+- name: Processing
+  description: Run analytics and processing over stored assets.
+paths:
+  /v2/processing/processes:
+    get:
+      operationId: listProcesses
+      tags:
+      - Processing
+      summary: Get available processes
+      description: Lists the processing/analytics operations available to run over stored assets.
+      x-up42-endpoint-status: modeled
+      responses:
+        '200':
+          description: A list of available processes.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /v2/processing/processes/{processId}/validation:
+    parameters:
+    - name: processId
+      in: path
+      required: true
+      schema:
+        type: string
+    post:
+      operationId: evaluateProcess
+      tags:
+      - Processing
+      summary: Determine process cost and validity
+      description: Validates process inputs and returns the estimated credit cost of running a process before it is executed.
+      x-up42-endpoint-status: modeled
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: The validation result and cost estimate.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /v2/processing/processes/{processId}/execution:
+    parameters:
+    - name: processId
+      in: path
+      required: true
+      schema:
+        type: string
+    post:
+      operationId: executeProcess
+      tags:
+      - Processing
+      summary: Run a process
+      description: Executes a process against input assets, creating a processing job.
+      x-up42-endpoint-status: modeled
+      parameters:
+      - $ref: '#/components/parameters/WorkspaceIdQuery'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '201':
+          description: The created processing job.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcessingJob'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /v2/processing/jobs:
+    get:
+      operationId: listProcessingJobs
+      tags:
+      - Processing
+      summary: Get processing jobs
+      description: Lists processing jobs and their status.
+      x-up42-endpoint-status: modeled
+      parameters:
+      - $ref: '#/components/parameters/WorkspaceIdQuery'
+      responses:
+        '200':
+          description: A list of processing jobs.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /v2/processing/jobs/{jobId}:
+    parameters:
+    - name: jobId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    get:
+      operationId: getProcessingJob
+      tags:
+      - Processing
+      summary: Get a processing job
+      description: Retrieves a single processing job by ID.
+      x-up42-endpoint-status: modeled
+      responses:
+        '200':
+          description: The requested processing job.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcessingJob'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  responses:
+    Unauthorized:
+      description: Missing or invalid access token.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    ProcessingJob:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        processId:
+          type: string
+        status:
+          type: string
+        results:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+    Error:
+      type: object
+      properties:
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+  parameters:
+    WorkspaceIdQuery:
+      name: workspaceId
+      in: query
+      required: false
+      description: The workspace that scopes the request.
+      schema:
+        type: string
+        format: uuid
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'OAuth2 Bearer access token. Obtain a token from a UP42 API key or account credentials via https://auth.up42.com/realms/public/protocol/openid-connect/token (client_id up42-api). Access tokens are short-lived (about 5 minutes); refresh as needed. Pass as `Authorization: Bearer YOUR_ACCESS_TOKEN`.'

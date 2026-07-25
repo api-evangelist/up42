@@ -1,0 +1,104 @@
+openapi: 3.0.3
+info:
+  title: UP42 Catalog Workspaces & Account API
+  description: 'The UP42 API is the programmatic surface of the UP42 geospatial marketplace and developer platform, operated by Airbus Defence and Space. It covers the full Earth observation workflow: searching the archive (Catalog), commissioning new satellite acquisitions (Tasking), estimating/placing/tracking Orders, storing and downloading results as cloud-native Assets, browsing storage through a STAC-compliant data management API, running Processing/analytics, and receiving order and job status changes via Webhooks.
+
+
+    All requests go to https://api.up42.com and are authenticated with an OAuth2 Bearer access token. Access tokens are short-lived (about 5 minutes) and are obtained either from a UP42 API key or from account credentials via the UP42 authentication server (https://auth.up42.com/realms/public/protocol/openid-connect/token, grant_type password or client_credentials, client_id up42-api). Most ordering, storage, and processing operations are scoped to a workspace by its workspaceId.
+
+
+    Endpoint accuracy: paths marked `x-up42-endpoint-status: confirmed` were verified against the UP42 developer documentation (docs.up42.com / developer.up42.com). Paths marked `modeled` are named operations from the UP42 API reference whose exact REST path/method were reconstructed from documentation and the UP42 Python SDK, and should be re-verified against the live reference during reconciliation.'
+  version: '2.0'
+  contact:
+    name: UP42 Support
+    url: https://up42.com/company/contact-us
+  termsOfService: https://up42.com/legal/terms-and-conditions
+servers:
+- url: https://api.up42.com
+  description: UP42 production API
+security:
+- bearerAuth: []
+tags:
+- name: Workspaces & Account
+  description: Account, workspace, and budget context.
+paths:
+  /v2/account:
+    get:
+      operationId: getAccount
+      tags:
+      - Workspaces & Account
+      summary: Get the authenticated account
+      description: Returns the account associated with the current access token.
+      x-up42-endpoint-status: modeled
+      responses:
+        '200':
+          description: The account.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /v2/workspaces:
+    get:
+      operationId: listWorkspaces
+      tags:
+      - Workspaces & Account
+      summary: Get workspaces
+      description: Lists the workspaces available to the account. A workspace ID scopes ordering, storage, and processing calls.
+      x-up42-endpoint-status: modeled
+      responses:
+        '200':
+          description: A list of workspaces.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /v2/budgets:
+    get:
+      operationId: listBudgets
+      tags:
+      - Workspaces & Account
+      summary: Get budgets
+      description: Lists budgets that cap credit spend. Available to enterprise accounts.
+      x-up42-endpoint-status: modeled
+      responses:
+        '200':
+          description: A list of budgets.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Not available for this account type.
+components:
+  responses:
+    Unauthorized:
+      description: Missing or invalid access token.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Error:
+      type: object
+      properties:
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'OAuth2 Bearer access token. Obtain a token from a UP42 API key or account credentials via https://auth.up42.com/realms/public/protocol/openid-connect/token (client_id up42-api). Access tokens are short-lived (about 5 minutes); refresh as needed. Pass as `Authorization: Bearer YOUR_ACCESS_TOKEN`.'

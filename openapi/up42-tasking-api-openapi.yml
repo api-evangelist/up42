@@ -1,0 +1,236 @@
+openapi: 3.0.3
+info:
+  title: UP42 Catalog Tasking API
+  description: 'The UP42 API is the programmatic surface of the UP42 geospatial marketplace and developer platform, operated by Airbus Defence and Space. It covers the full Earth observation workflow: searching the archive (Catalog), commissioning new satellite acquisitions (Tasking), estimating/placing/tracking Orders, storing and downloading results as cloud-native Assets, browsing storage through a STAC-compliant data management API, running Processing/analytics, and receiving order and job status changes via Webhooks.
+
+
+    All requests go to https://api.up42.com and are authenticated with an OAuth2 Bearer access token. Access tokens are short-lived (about 5 minutes) and are obtained either from a UP42 API key or from account credentials via the UP42 authentication server (https://auth.up42.com/realms/public/protocol/openid-connect/token, grant_type password or client_credentials, client_id up42-api). Most ordering, storage, and processing operations are scoped to a workspace by its workspaceId.
+
+
+    Endpoint accuracy: paths marked `x-up42-endpoint-status: confirmed` were verified against the UP42 developer documentation (docs.up42.com / developer.up42.com). Paths marked `modeled` are named operations from the UP42 API reference whose exact REST path/method were reconstructed from documentation and the UP42 Python SDK, and should be re-verified against the live reference during reconciliation.'
+  version: '2.0'
+  contact:
+    name: UP42 Support
+    url: https://up42.com/company/contact-us
+  termsOfService: https://up42.com/legal/terms-and-conditions
+servers:
+- url: https://api.up42.com
+  description: UP42 production API
+security:
+- bearerAuth: []
+tags:
+- name: Tasking
+  description: Commission new satellite acquisitions on demand.
+paths:
+  /v2/tasking/feasibility:
+    get:
+      operationId: listTaskingFeasibilityStudies
+      tags:
+      - Tasking
+      summary: Get feasibility studies
+      description: Lists tasking feasibility studies for your workspace. A feasibility study evaluates whether and how a requested acquisition can be captured and returns one or more options to choose from.
+      x-up42-endpoint-status: modeled
+      parameters:
+      - $ref: '#/components/parameters/WorkspaceIdQuery'
+      responses:
+        '200':
+          description: A list of feasibility studies.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeasibilityList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /v2/tasking/feasibility/{feasibilityId}:
+    parameters:
+    - name: feasibilityId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    patch:
+      operationId: updateTaskingFeasibilityStudy
+      tags:
+      - Tasking
+      summary: Choose a feasibility option
+      description: Accepts one of the options returned by a tasking feasibility study.
+      x-up42-endpoint-status: modeled
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                acceptedOption:
+                  type: string
+                  format: uuid
+      responses:
+        '200':
+          description: The updated feasibility study.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Feasibility'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /v2/tasking/quotations:
+    get:
+      operationId: listTaskingQuotations
+      tags:
+      - Tasking
+      summary: Get quotations
+      description: Lists tasking quotations. After a feasibility option is chosen, UP42 produces a quotation with the credit price that must be accepted before the tasking order is placed.
+      x-up42-endpoint-status: modeled
+      parameters:
+      - $ref: '#/components/parameters/WorkspaceIdQuery'
+      responses:
+        '200':
+          description: A list of quotations.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuotationList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /v2/tasking/quotations/{quotationId}:
+    parameters:
+    - name: quotationId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    patch:
+      operationId: updateTaskingQuotation
+      tags:
+      - Tasking
+      summary: Accept or decline a quotation
+      description: Accepts or declines a tasking quotation by setting its decision.
+      x-up42-endpoint-status: modeled
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                decision:
+                  type: string
+                  enum:
+                  - ACCEPTED
+                  - DECLINED
+      responses:
+        '200':
+          description: The updated quotation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Quotation'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /v2/tasking/orders/opportunities:
+    get:
+      operationId: listTaskingOrderOpportunities
+      tags:
+      - Tasking
+      summary: Get tasking opportunities
+      description: Lists acquisition opportunities (satellite passes) for a tasking collection over an area of interest and time window.
+      x-up42-endpoint-status: modeled
+      parameters:
+      - $ref: '#/components/parameters/WorkspaceIdQuery'
+      responses:
+        '200':
+          description: A list of tasking opportunities.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  responses:
+    Unauthorized:
+      description: Missing or invalid access token.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  parameters:
+    WorkspaceIdQuery:
+      name: workspaceId
+      in: query
+      required: false
+      description: The workspace that scopes the request.
+      schema:
+        type: string
+        format: uuid
+  schemas:
+    Feasibility:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        status:
+          type: string
+        options:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+    FeasibilityList:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/Feasibility'
+    QuotationList:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/Quotation'
+    Error:
+      type: object
+      properties:
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+    Quotation:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        decision:
+          type: string
+          enum:
+          - NOT_DECIDED
+          - ACCEPTED
+          - DECLINED
+        credits:
+          type: integer
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'OAuth2 Bearer access token. Obtain a token from a UP42 API key or account credentials via https://auth.up42.com/realms/public/protocol/openid-connect/token (client_id up42-api). Access tokens are short-lived (about 5 minutes); refresh as needed. Pass as `Authorization: Bearer YOUR_ACCESS_TOKEN`.'

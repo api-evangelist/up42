@@ -1,0 +1,304 @@
+openapi: 3.0.3
+info:
+  title: UP42 Catalog Orders API
+  description: 'The UP42 API is the programmatic surface of the UP42 geospatial marketplace and developer platform, operated by Airbus Defence and Space. It covers the full Earth observation workflow: searching the archive (Catalog), commissioning new satellite acquisitions (Tasking), estimating/placing/tracking Orders, storing and downloading results as cloud-native Assets, browsing storage through a STAC-compliant data management API, running Processing/analytics, and receiving order and job status changes via Webhooks.
+
+
+    All requests go to https://api.up42.com and are authenticated with an OAuth2 Bearer access token. Access tokens are short-lived (about 5 minutes) and are obtained either from a UP42 API key or from account credentials via the UP42 authentication server (https://auth.up42.com/realms/public/protocol/openid-connect/token, grant_type password or client_credentials, client_id up42-api). Most ordering, storage, and processing operations are scoped to a workspace by its workspaceId.
+
+
+    Endpoint accuracy: paths marked `x-up42-endpoint-status: confirmed` were verified against the UP42 developer documentation (docs.up42.com / developer.up42.com). Paths marked `modeled` are named operations from the UP42 API reference whose exact REST path/method were reconstructed from documentation and the UP42 Python SDK, and should be re-verified against the live reference during reconciliation.'
+  version: '2.0'
+  contact:
+    name: UP42 Support
+    url: https://up42.com/company/contact-us
+  termsOfService: https://up42.com/legal/terms-and-conditions
+servers:
+- url: https://api.up42.com
+  description: UP42 production API
+security:
+- bearerAuth: []
+tags:
+- name: Orders
+  description: Estimate, place, and track catalog and tasking orders.
+paths:
+  /v2/orders/schema:
+    get:
+      operationId: getOrderJsonSchema
+      tags:
+      - Orders
+      summary: Get a JSON schema of an order form
+      description: Returns the JSON schema describing the parameters required to place an order for a given data product, so a client can build and validate an order form.
+      x-up42-endpoint-status: modeled
+      parameters:
+      - name: dataProductId
+        in: query
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: The order form JSON schema.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /v2/orders/estimate:
+    post:
+      operationId: estimateOrder
+      tags:
+      - Orders
+      summary: Estimate the cost of an order
+      description: Estimates the credit cost of an order for the given data product and parameters (area of interest, image selection) before it is placed.
+      x-up42-endpoint-status: modeled
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderInput'
+      responses:
+        '200':
+          description: The order cost estimate, in credits.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderEstimate'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /v2/orders:
+    get:
+      operationId: listOrders
+      tags:
+      - Orders
+      summary: Get orders
+      description: Lists orders, optionally filtered by workspace and status.
+      x-up42-endpoint-status: modeled
+      parameters:
+      - $ref: '#/components/parameters/WorkspaceIdQuery'
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: A paged list of orders.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      operationId: createOrder
+      tags:
+      - Orders
+      summary: Create an order
+      description: Places a catalog or tasking order under a workspace. The workspaceId query parameter is required. Catalog orders are fulfilled immediately; tasking orders proceed to acquisition after the quotation is accepted.
+      x-up42-endpoint-status: confirmed
+      parameters:
+      - name: workspaceId
+        in: query
+        required: true
+        description: The workspace the order is placed under.
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderInput'
+      responses:
+        '201':
+          description: The created order.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /v2/orders/{orderId}:
+    parameters:
+    - name: orderId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    get:
+      operationId: getOrder
+      tags:
+      - Orders
+      summary: Get an order
+      description: Retrieves a single order by its ID, including its current status.
+      x-up42-endpoint-status: modeled
+      responses:
+        '200':
+          description: The requested order.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      operationId: updateOrder
+      tags:
+      - Orders
+      summary: Update an order
+      description: Updates mutable fields of an order (for example, its tags).
+      x-up42-endpoint-status: modeled
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: The updated order.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /v2/orders/{orderId}/cancel:
+    parameters:
+    - name: orderId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    post:
+      operationId: cancelOrder
+      tags:
+      - Orders
+      summary: Cancel an order
+      description: Cancels an order that is still in a cancellable state (for example CREATED or PLACEMENT_FAILED).
+      x-up42-endpoint-status: modeled
+      responses:
+        '200':
+          description: The cancelled order.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  schemas:
+    OrderInput:
+      type: object
+      properties:
+        dataProduct:
+          type: string
+          format: uuid
+        params:
+          type: object
+          description: Product-specific order parameters, including aoi and image IDs.
+          additionalProperties: true
+        tags:
+          type: array
+          items:
+            type: string
+    OrderEstimate:
+      type: object
+      properties:
+        credits:
+          type: integer
+        size:
+          type: number
+          description: Area of the order in km2.
+        unit:
+          type: string
+    Order:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        workspaceId:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - ARCHIVE
+          - TASKING
+        status:
+          type: string
+          description: e.g. CREATED, BEING_FULFILLED, DELIVERED, FAILED_PERMANENTLY.
+        dataProductId:
+          type: string
+          format: uuid
+        createdAt:
+          type: string
+          format: date-time
+    OrderList:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/Order'
+    Error:
+      type: object
+      properties:
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+  responses:
+    ValidationError:
+      description: The request payload failed validation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Missing or invalid access token.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  parameters:
+    WorkspaceIdQuery:
+      name: workspaceId
+      in: query
+      required: false
+      description: The workspace that scopes the request.
+      schema:
+        type: string
+        format: uuid
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'OAuth2 Bearer access token. Obtain a token from a UP42 API key or account credentials via https://auth.up42.com/realms/public/protocol/openid-connect/token (client_id up42-api). Access tokens are short-lived (about 5 minutes); refresh as needed. Pass as `Authorization: Bearer YOUR_ACCESS_TOKEN`.'

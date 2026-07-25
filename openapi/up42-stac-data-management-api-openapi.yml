@@ -1,0 +1,317 @@
+openapi: 3.0.3
+info:
+  title: UP42 Catalog STAC Data Management API
+  description: 'The UP42 API is the programmatic surface of the UP42 geospatial marketplace and developer platform, operated by Airbus Defence and Space. It covers the full Earth observation workflow: searching the archive (Catalog), commissioning new satellite acquisitions (Tasking), estimating/placing/tracking Orders, storing and downloading results as cloud-native Assets, browsing storage through a STAC-compliant data management API, running Processing/analytics, and receiving order and job status changes via Webhooks.
+
+
+    All requests go to https://api.up42.com and are authenticated with an OAuth2 Bearer access token. Access tokens are short-lived (about 5 minutes) and are obtained either from a UP42 API key or from account credentials via the UP42 authentication server (https://auth.up42.com/realms/public/protocol/openid-connect/token, grant_type password or client_credentials, client_id up42-api). Most ordering, storage, and processing operations are scoped to a workspace by its workspaceId.
+
+
+    Endpoint accuracy: paths marked `x-up42-endpoint-status: confirmed` were verified against the UP42 developer documentation (docs.up42.com / developer.up42.com). Paths marked `modeled` are named operations from the UP42 API reference whose exact REST path/method were reconstructed from documentation and the UP42 Python SDK, and should be re-verified against the live reference during reconciliation.'
+  version: '2.0'
+  contact:
+    name: UP42 Support
+    url: https://up42.com/company/contact-us
+  termsOfService: https://up42.com/legal/terms-and-conditions
+servers:
+- url: https://api.up42.com
+  description: UP42 production API
+security:
+- bearerAuth: []
+tags:
+- name: STAC Data Management
+  description: STAC-compliant view of everything in your storage.
+paths:
+  /v2/sas:
+    get:
+      operationId: getStacLandingPage
+      tags:
+      - STAC Data Management
+      summary: Get the STAC landing page
+      description: Returns the STAC API landing page for your storage, including the API version and the STAC extensions it conforms to.
+      x-up42-endpoint-status: confirmed
+      responses:
+        '200':
+          description: The STAC landing page.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /v2/sas/collections:
+    get:
+      operationId: getStacCollections
+      tags:
+      - STAC Data Management
+      summary: Get STAC collections
+      description: Lists all STAC collections in your storage.
+      x-up42-endpoint-status: confirmed
+      responses:
+        '200':
+          description: A list of STAC collections.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /v2/sas/collections/{collectionId}:
+    parameters:
+    - name: collectionId
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      operationId: getStacCollection
+      tags:
+      - STAC Data Management
+      summary: Get a STAC collection
+      description: Retrieves a single STAC collection by its ID.
+      x-up42-endpoint-status: confirmed
+      responses:
+        '200':
+          description: The requested STAC collection.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      operationId: deleteStacCollection
+      tags:
+      - STAC Data Management
+      summary: Remove a STAC collection
+      description: Deletes a STAC collection and its items from your storage.
+      x-up42-endpoint-status: confirmed
+      responses:
+        '204':
+          description: The collection was removed.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /v2/sas/collections/{collectionId}/items:
+    parameters:
+    - name: collectionId
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      operationId: getStacItems
+      tags:
+      - STAC Data Management
+      summary: Get STAC items
+      description: Lists all STAC items in a collection.
+      x-up42-endpoint-status: confirmed
+      responses:
+        '200':
+          description: A STAC FeatureCollection of items.
+          content:
+            application/geo+json:
+              schema:
+                $ref: '#/components/schemas/StacItemCollection'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /v2/sas/collections/{collectionId}/items/{itemId}:
+    parameters:
+    - name: collectionId
+      in: path
+      required: true
+      schema:
+        type: string
+    - name: itemId
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      operationId: getStacItem
+      tags:
+      - STAC Data Management
+      summary: Get a STAC item
+      description: Retrieves a single STAC item by ID within a collection.
+      x-up42-endpoint-status: confirmed
+      responses:
+        '200':
+          description: The requested STAC item.
+          content:
+            application/geo+json:
+              schema:
+                $ref: '#/components/schemas/StacItem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      operationId: updateStacItem
+      tags:
+      - STAC Data Management
+      summary: Update a STAC item
+      description: Updates the title or tags of a STAC item.
+      x-up42-endpoint-status: confirmed
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                tags:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: The updated STAC item.
+          content:
+            application/geo+json:
+              schema:
+                $ref: '#/components/schemas/StacItem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /v2/sas/queryables:
+    get:
+      operationId: getStacQueryables
+      tags:
+      - STAC Data Management
+      summary: Get data management search parameters
+      description: Returns the queryable properties available for STAC searches over your storage.
+      x-up42-endpoint-status: confirmed
+      responses:
+        '200':
+          description: The set of queryable properties.
+          content:
+            application/schema+json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /v2/sas/search:
+    post:
+      operationId: searchStacItems
+      tags:
+      - STAC Data Management
+      summary: Search for STAC items
+      description: Runs a STAC search across all STAC items in your storage, filtering by collection, geometry, datetime, and queryable properties.
+      x-up42-endpoint-status: confirmed
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StacSearchRequest'
+      responses:
+        '200':
+          description: A STAC FeatureCollection of matching items.
+          content:
+            application/geo+json:
+              schema:
+                $ref: '#/components/schemas/StacItemCollection'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  schemas:
+    StacItem:
+      type: object
+      properties:
+        type:
+          type: string
+          default: Feature
+        stac_version:
+          type: string
+        id:
+          type: string
+        collection:
+          type: string
+        geometry:
+          type: object
+          additionalProperties: true
+        bbox:
+          type: array
+          items:
+            type: number
+        properties:
+          type: object
+          additionalProperties: true
+        assets:
+          type: object
+          additionalProperties: true
+    StacItemCollection:
+      type: object
+      properties:
+        type:
+          type: string
+          default: FeatureCollection
+        features:
+          type: array
+          items:
+            $ref: '#/components/schemas/StacItem'
+    StacSearchRequest:
+      type: object
+      properties:
+        collections:
+          type: array
+          items:
+            type: string
+        intersects:
+          type: object
+          description: A GeoJSON geometry to intersect.
+          additionalProperties: true
+        bbox:
+          type: array
+          items:
+            type: number
+        datetime:
+          type: string
+          description: An RFC 3339 datetime or interval.
+        query:
+          type: object
+          description: Property queries such as cloudCoverage.
+          additionalProperties: true
+        limit:
+          type: integer
+          default: 10
+    Error:
+      type: object
+      properties:
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+  responses:
+    Unauthorized:
+      description: Missing or invalid access token.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'OAuth2 Bearer access token. Obtain a token from a UP42 API key or account credentials via https://auth.up42.com/realms/public/protocol/openid-connect/token (client_id up42-api). Access tokens are short-lived (about 5 minutes); refresh as needed. Pass as `Authorization: Bearer YOUR_ACCESS_TOKEN`.'
