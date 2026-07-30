@@ -13,7 +13,20 @@ description: UP42 is a geospatial marketplace and developer platform for Earth
   wrapped by an official Python SDK. Storage is powered by STAC and the
   cloud-native asset model, and job/order status changes can be pushed to consumer
   endpoints via webhooks.
-image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+accessModel:
+  pricing: paid
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Paid · Self-serve signup
+  confidence: high
+  source:
+  - plans
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/up42.png
 tags:
 - Geospatial
 - Earth Observation
@@ -29,171 +42,244 @@ specificationVersion: '0.19'
 apis:
 - aid: up42:up42-catalog-api
   name: UP42 Catalog API
-  tags:
-  - Catalog
-  - Archive
-  - Search
-  - STAC
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  description: Search the archive of previously captured imagery.
   humanURL: https://docs.up42.com/developers/api-catalog
   baseURL: https://api.up42.com
-  properties:
-  - url: https://docs.up42.com/developers/api-catalog
-    type: Documentation
-  - url: https://developer.up42.com/reference/overview
-    type: APIReference
-  - url: openapi/up42-openapi.yml
-    type: OpenAPI
-  - url: collections/up42.postman_collection.json
-    type: PostmanCollection
-  - url: collections/up42.opencollection.json
-    type: OpenCollection
-  description: Search the UP42 archive of previously captured satellite and aerial
-    imagery. List geospatial collections, run STAC searches against a host's
-    catalog, and retrieve quicklook and thumbnail previews before placing an order
-    for immediate delivery.
-- aid: up42:up42-tasking-api
-  name: UP42 Tasking API
   tags:
-  - Tasking
-  - Acquisition
-  - Feasibility
-  - Quotations
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://docs.up42.com/developers/api-tasking
-  baseURL: https://api.up42.com
+  - Catalog
   properties:
-  - url: https://docs.up42.com/developers/api-tasking
-    type: Documentation
-  - url: https://developer.up42.com/reference/overview
-    type: APIReference
-  - url: openapi/up42-openapi.yml
-    type: OpenAPI
-  description: Commission new satellite acquisitions on demand. List tasking
-    collections and opportunities, request feasibility studies, review and accept
-    quotations, and create tasking orders scoped to a workspace and area of
-    interest.
+  - type: OpenAPI
+    url: openapi/up42-catalog-api-openapi.yml
+  - type: Documentation
+    url: https://docs.up42.com/developers/api-catalog
+  - type: APIReference
+    url: https://developer.up42.com/reference/overview
+  - type: PostmanCollection
+    url: collections/up42.postman_collection.json
+  - type: OpenCollection
+    url: collections/up42.opencollection.json
+  - type: Documentation
+    url: https://docs.up42.com/developers/api-tasking
+  - type: Documentation
+    url: https://docs.up42.com/developers/api
+  - type: Documentation
+    url: https://docs.up42.com/developers/api-assets
+  - type: Documentation
+    url: https://docs.up42.com/developers/api-stac
+  - type: Documentation
+    url: https://docs.up42.com/processing/getting-started
+  - type: Documentation
+    url: https://docs.up42.com/help/webhooks
 - aid: up42:up42-orders-api
   name: UP42 Orders API
+  description: Estimate, place, and track catalog and tasking orders.
+  humanURL: https://docs.up42.com/developers/api-catalog
+  baseURL: https://api.up42.com
   tags:
   - Orders
-  - Estimate
-  - Fulfillment
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://docs.up42.com/developers/api
-  baseURL: https://api.up42.com
   properties:
-  - url: https://docs.up42.com/developers/api
-    type: Documentation
-  - url: https://developer.up42.com/reference/overview
-    type: APIReference
-  - url: openapi/up42-openapi.yml
-    type: OpenAPI
-  description: Estimate, place, and track catalog and tasking orders. Get a JSON
-    schema for an order form, estimate the credit cost, create an order under a
-    workspace, list and retrieve orders, update or cancel an order, and inspect
-    order coverage.
-- aid: up42:up42-storage-assets-api
-  name: UP42 Storage Assets API
-  tags:
-  - Storage
-  - Assets
-  - Download
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://docs.up42.com/developers/api-assets
-  baseURL: https://api.up42.com
-  properties:
-  - url: https://docs.up42.com/developers/api-assets
-    type: Documentation
-  - url: https://developer.up42.com/reference/overview
-    type: APIReference
-  - url: openapi/up42-openapi.yml
-    type: OpenAPI
-  description: List and retrieve the geospatial assets produced by completed catalog
-    and tasking orders, inspect asset and STAC item metadata, and generate a
-    pre-signed download URL to fetch the underlying files without additional
-    authentication.
-- aid: up42:up42-stac-data-management-api
-  name: UP42 STAC Data Management API
-  tags:
-  - STAC
-  - Data Management
-  - Collections
-  - Items
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://docs.up42.com/developers/api-stac
-  baseURL: https://api.up42.com
-  properties:
-  - url: https://docs.up42.com/developers/api-stac
-    type: Documentation
-  - url: https://developer.up42.com/reference/overview
-    type: APIReference
-  - url: openapi/up42-openapi.yml
-    type: OpenAPI
-  description: A STAC-compliant (SpatioTemporal Asset Catalog) view of everything in
-    your UP42 storage. Browse the STAC landing page and conformance, list and get
-    STAC collections and items, update item titles and tags, discover queryables,
-    and run a cross-storage STAC search.
+  - type: OpenAPI
+    url: openapi/up42-orders-api-openapi.yml
+  - type: Documentation
+    url: https://docs.up42.com/developers/api-catalog
+  - type: APIReference
+    url: https://developer.up42.com/reference/overview
+  - type: PostmanCollection
+    url: collections/up42.postman_collection.json
+  - type: OpenCollection
+    url: collections/up42.opencollection.json
+  - type: Documentation
+    url: https://docs.up42.com/developers/api-tasking
+  - type: Documentation
+    url: https://docs.up42.com/developers/api
+  - type: Documentation
+    url: https://docs.up42.com/developers/api-assets
+  - type: Documentation
+    url: https://docs.up42.com/developers/api-stac
+  - type: Documentation
+    url: https://docs.up42.com/processing/getting-started
+  - type: Documentation
+    url: https://docs.up42.com/help/webhooks
 - aid: up42:up42-processing-api
   name: UP42 Processing API
+  description: Run analytics and processing over stored assets.
+  humanURL: https://docs.up42.com/developers/api-catalog
+  baseURL: https://api.up42.com
   tags:
   - Processing
-  - Analytics
-  - Jobs
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://docs.up42.com/processing/getting-started
-  baseURL: https://api.up42.com
   properties:
-  - url: https://docs.up42.com/processing/getting-started
-    type: Documentation
-  - url: https://developer.up42.com/reference/overview
-    type: APIReference
-  - url: openapi/up42-openapi.yml
-    type: OpenAPI
-  description: Run advanced analytics and processing over geospatial assets in
-    storage. List available processes, evaluate the cost and validity of a process
-    against inputs, execute a process, and list and track the resulting processing
-    jobs.
+  - type: OpenAPI
+    url: openapi/up42-processing-api-openapi.yml
+  - type: Documentation
+    url: https://docs.up42.com/developers/api-catalog
+  - type: APIReference
+    url: https://developer.up42.com/reference/overview
+  - type: PostmanCollection
+    url: collections/up42.postman_collection.json
+  - type: OpenCollection
+    url: collections/up42.opencollection.json
+  - type: Documentation
+    url: https://docs.up42.com/developers/api-tasking
+  - type: Documentation
+    url: https://docs.up42.com/developers/api
+  - type: Documentation
+    url: https://docs.up42.com/developers/api-assets
+  - type: Documentation
+    url: https://docs.up42.com/developers/api-stac
+  - type: Documentation
+    url: https://docs.up42.com/processing/getting-started
+  - type: Documentation
+    url: https://docs.up42.com/help/webhooks
+- aid: up42:up42-stac-data-management-api
+  name: UP42 STAC Data Management API
+  description: STAC-compliant view of everything in your storage.
+  humanURL: https://docs.up42.com/developers/api-catalog
+  baseURL: https://api.up42.com
+  tags:
+  - STAC Data Management
+  properties:
+  - type: OpenAPI
+    url: openapi/up42-stac-data-management-api-openapi.yml
+  - type: Documentation
+    url: https://docs.up42.com/developers/api-catalog
+  - type: APIReference
+    url: https://developer.up42.com/reference/overview
+  - type: PostmanCollection
+    url: collections/up42.postman_collection.json
+  - type: OpenCollection
+    url: collections/up42.opencollection.json
+  - type: Documentation
+    url: https://docs.up42.com/developers/api-tasking
+  - type: Documentation
+    url: https://docs.up42.com/developers/api
+  - type: Documentation
+    url: https://docs.up42.com/developers/api-assets
+  - type: Documentation
+    url: https://docs.up42.com/developers/api-stac
+  - type: Documentation
+    url: https://docs.up42.com/processing/getting-started
+  - type: Documentation
+    url: https://docs.up42.com/help/webhooks
+- aid: up42:up42-storage-assets-api
+  name: UP42 Storage Assets API
+  description: List, inspect, and download geospatial assets in storage.
+  humanURL: https://docs.up42.com/developers/api-catalog
+  baseURL: https://api.up42.com
+  tags:
+  - Storage Assets
+  properties:
+  - type: OpenAPI
+    url: openapi/up42-storage-assets-api-openapi.yml
+  - type: Documentation
+    url: https://docs.up42.com/developers/api-catalog
+  - type: APIReference
+    url: https://developer.up42.com/reference/overview
+  - type: PostmanCollection
+    url: collections/up42.postman_collection.json
+  - type: OpenCollection
+    url: collections/up42.opencollection.json
+  - type: Documentation
+    url: https://docs.up42.com/developers/api-tasking
+  - type: Documentation
+    url: https://docs.up42.com/developers/api
+  - type: Documentation
+    url: https://docs.up42.com/developers/api-assets
+  - type: Documentation
+    url: https://docs.up42.com/developers/api-stac
+  - type: Documentation
+    url: https://docs.up42.com/processing/getting-started
+  - type: Documentation
+    url: https://docs.up42.com/help/webhooks
+- aid: up42:up42-tasking-api
+  name: UP42 Tasking API
+  description: Commission new satellite acquisitions on demand.
+  humanURL: https://docs.up42.com/developers/api-catalog
+  baseURL: https://api.up42.com
+  tags:
+  - Tasking
+  properties:
+  - type: OpenAPI
+    url: openapi/up42-tasking-api-openapi.yml
+  - type: Documentation
+    url: https://docs.up42.com/developers/api-catalog
+  - type: APIReference
+    url: https://developer.up42.com/reference/overview
+  - type: PostmanCollection
+    url: collections/up42.postman_collection.json
+  - type: OpenCollection
+    url: collections/up42.opencollection.json
+  - type: Documentation
+    url: https://docs.up42.com/developers/api-tasking
+  - type: Documentation
+    url: https://docs.up42.com/developers/api
+  - type: Documentation
+    url: https://docs.up42.com/developers/api-assets
+  - type: Documentation
+    url: https://docs.up42.com/developers/api-stac
+  - type: Documentation
+    url: https://docs.up42.com/processing/getting-started
+  - type: Documentation
+    url: https://docs.up42.com/help/webhooks
 - aid: up42:up42-webhooks-api
   name: UP42 Webhooks API
+  description: Register HTTPS endpoints for order and job status events.
+  humanURL: https://docs.up42.com/developers/api-catalog
+  baseURL: https://api.up42.com
   tags:
   - Webhooks
-  - Events
-  - Notifications
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://docs.up42.com/help/webhooks
-  baseURL: https://api.up42.com
   properties:
-  - url: https://docs.up42.com/help/webhooks
-    type: Documentation
-  - url: https://developer.up42.com/reference/overview
-    type: APIReference
-  - url: openapi/up42-openapi.yml
-    type: OpenAPI
-  description: Register HTTPS webhook endpoints that UP42 calls when order and job
-    status changes occur. Create, list, get, update, and delete webhooks, list the
-    available event types, and test a webhook with a sample payload. Server-to-
-    endpoint HTTP callbacks, not a bidirectional WebSocket.
+  - type: OpenAPI
+    url: openapi/up42-webhooks-api-openapi.yml
+  - type: Documentation
+    url: https://docs.up42.com/developers/api-catalog
+  - type: APIReference
+    url: https://developer.up42.com/reference/overview
+  - type: PostmanCollection
+    url: collections/up42.postman_collection.json
+  - type: OpenCollection
+    url: collections/up42.opencollection.json
+  - type: Documentation
+    url: https://docs.up42.com/developers/api-tasking
+  - type: Documentation
+    url: https://docs.up42.com/developers/api
+  - type: Documentation
+    url: https://docs.up42.com/developers/api-assets
+  - type: Documentation
+    url: https://docs.up42.com/developers/api-stac
+  - type: Documentation
+    url: https://docs.up42.com/processing/getting-started
+  - type: Documentation
+    url: https://docs.up42.com/help/webhooks
 - aid: up42:up42-workspaces-account-api
-  name: UP42 Workspaces and Account API
-  tags:
-  - Workspaces
-  - Account
-  - Budgets
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://docs.up42.com/developers/api
+  name: UP42 Workspaces & Account API
+  description: Account, workspace, and budget context.
+  humanURL: https://docs.up42.com/developers/api-catalog
   baseURL: https://api.up42.com
+  tags:
+  - Workspaces & Account
   properties:
-  - url: https://docs.up42.com/developers/api
-    type: Documentation
-  - url: https://developer.up42.com/reference/overview
-    type: APIReference
-  - url: openapi/up42-openapi.yml
-    type: OpenAPI
-  description: Read account and workspace context used across the platform. Retrieve
-    the authenticated account, list workspaces, and (for enterprise accounts)
-    inspect budgets that cap credit spend. Workspace IDs scope ordering, storage,
-    and processing calls.
+  - type: OpenAPI
+    url: openapi/up42-workspaces-account-api-openapi.yml
+  - type: Documentation
+    url: https://docs.up42.com/developers/api-catalog
+  - type: APIReference
+    url: https://developer.up42.com/reference/overview
+  - type: PostmanCollection
+    url: collections/up42.postman_collection.json
+  - type: OpenCollection
+    url: collections/up42.opencollection.json
+  - type: Documentation
+    url: https://docs.up42.com/developers/api-tasking
+  - type: Documentation
+    url: https://docs.up42.com/developers/api
+  - type: Documentation
+    url: https://docs.up42.com/developers/api-assets
+  - type: Documentation
+    url: https://docs.up42.com/developers/api-stac
+  - type: Documentation
+    url: https://docs.up42.com/processing/getting-started
+  - type: Documentation
+    url: https://docs.up42.com/help/webhooks
 common:
 - type: AgenticAccess
   url: agentic-access/up42-agentic-access.yml
