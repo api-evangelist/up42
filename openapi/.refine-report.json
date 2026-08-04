@@ -1,0 +1,28 @@
+{
+  "provider": "up42",
+  "sources": [
+    "up42-catalog-api-openapi.yml",
+    "up42-orders-api-openapi.yml",
+    "up42-processing-api-openapi.yml",
+    "up42-stac-data-management-api-openapi.yml",
+    "up42-storage-assets-api-openapi.yml",
+    "up42-tasking-api-openapi.yml",
+    "up42-webhooks-api-openapi.yml",
+    "up42-workspaces-account-api-openapi.yml"
+  ],
+  "outputs": [
+    "up42-catalog-api-openapi.yml",
+    "up42-orders-api-openapi.yml",
+    "up42-processing-api-openapi.yml",
+    "up42-stac-data-management-api-openapi.yml",
+    "up42-storage-assets-api-openapi.yml",
+    "up42-tasking-api-openapi.yml",
+    "up42-webhooks-api-openapi.yml",
+    "up42-workspaces-account-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}
