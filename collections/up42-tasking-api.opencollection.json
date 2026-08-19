@@ -1,0 +1,125 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "UP42 Catalog Tasking API",
+    "version": "2.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Tasking",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get feasibility studies",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.up42.com/v2/tasking/feasibility",
+            "params": [
+              {
+                "name": "workspaceId",
+                "value": "",
+                "type": "query",
+                "description": "The workspace that scopes the request."
+              }
+            ]
+          },
+          "docs": "Lists tasking feasibility studies for your workspace. A feasibility study evaluates whether and how a requested acquisition can be captured and returns one or more options to choose from."
+        },
+        {
+          "info": {
+            "name": "Choose a feasibility option",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.up42.com/v2/tasking/feasibility/:feasibilityId",
+            "params": [
+              {
+                "name": "feasibilityId",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Accepts one of the options returned by a tasking feasibility study."
+        },
+        {
+          "info": {
+            "name": "Get quotations",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.up42.com/v2/tasking/quotations",
+            "params": [
+              {
+                "name": "workspaceId",
+                "value": "",
+                "type": "query",
+                "description": "The workspace that scopes the request."
+              }
+            ]
+          },
+          "docs": "Lists tasking quotations. After a feasibility option is chosen, UP42 produces a quotation with the credit price that must be accepted before the tasking order is placed."
+        },
+        {
+          "info": {
+            "name": "Accept or decline a quotation",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.up42.com/v2/tasking/quotations/:quotationId",
+            "params": [
+              {
+                "name": "quotationId",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Accepts or declines a tasking quotation by setting its decision."
+        },
+        {
+          "info": {
+            "name": "Get tasking opportunities",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.up42.com/v2/tasking/orders/opportunities",
+            "params": [
+              {
+                "name": "workspaceId",
+                "value": "",
+                "type": "query",
+                "description": "The workspace that scopes the request."
+              }
+            ]
+          },
+          "docs": "Lists acquisition opportunities (satellite passes) for a tasking collection over an area of interest and time window."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

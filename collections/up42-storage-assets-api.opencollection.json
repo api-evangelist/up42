@@ -1,0 +1,85 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "UP42 Catalog Storage Assets API",
+    "version": "2.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Storage Assets",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get assets",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.up42.com/v2/assets",
+            "params": [
+              {
+                "name": "workspaceId",
+                "value": "",
+                "type": "query",
+                "description": "The workspace that scopes the request."
+              },
+              {
+                "name": "size",
+                "value": "",
+                "type": "query",
+                "description": "Page size."
+              }
+            ]
+          },
+          "docs": "Lists the geospatial assets in your storage produced by completed catalog and tasking orders. Filter by workspace, collection, producer, and acquisition date."
+        },
+        {
+          "info": {
+            "name": "Get an asset",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.up42.com/v2/assets/:assetId",
+            "params": [
+              {
+                "name": "assetId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Retrieves metadata for a single asset by its ID."
+        },
+        {
+          "info": {
+            "name": "Create a download URL",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.up42.com/v2/assets/:assetId/download-url",
+            "params": [
+              {
+                "name": "assetId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Generates a short-lived, pre-signed URL to download an asset's files directly, without additional authentication."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

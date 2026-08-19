@@ -1,0 +1,122 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "UP42 Catalog Processing API",
+    "version": "2.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Processing",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get available processes",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.up42.com/v2/processing/processes"
+          },
+          "docs": "Lists the processing/analytics operations available to run over stored assets."
+        },
+        {
+          "info": {
+            "name": "Determine process cost and validity",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.up42.com/v2/processing/processes/:processId/validation",
+            "params": [
+              {
+                "name": "processId",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Validates process inputs and returns the estimated credit cost of running a process before it is executed."
+        },
+        {
+          "info": {
+            "name": "Run a process",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.up42.com/v2/processing/processes/:processId/execution",
+            "params": [
+              {
+                "name": "processId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "workspaceId",
+                "value": "",
+                "type": "query",
+                "description": "The workspace that scopes the request."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Executes a process against input assets, creating a processing job."
+        },
+        {
+          "info": {
+            "name": "Get processing jobs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.up42.com/v2/processing/jobs",
+            "params": [
+              {
+                "name": "workspaceId",
+                "value": "",
+                "type": "query",
+                "description": "The workspace that scopes the request."
+              }
+            ]
+          },
+          "docs": "Lists processing jobs and their status."
+        },
+        {
+          "info": {
+            "name": "Get a processing job",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.up42.com/v2/processing/jobs/:jobId",
+            "params": [
+              {
+                "name": "jobId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Retrieves a single processing job by ID."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

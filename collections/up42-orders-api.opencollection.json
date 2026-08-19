@@ -1,0 +1,162 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "UP42 Catalog Orders API",
+    "version": "2.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Orders",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get a JSON schema of an order form",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.up42.com/v2/orders/schema",
+            "params": [
+              {
+                "name": "dataProductId",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Returns the JSON schema describing the parameters required to place an order for a given data product, so a client can build and validate an order form."
+        },
+        {
+          "info": {
+            "name": "Estimate the cost of an order",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.up42.com/v2/orders/estimate",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Estimates the credit cost of an order for the given data product and parameters (area of interest, image selection) before it is placed."
+        },
+        {
+          "info": {
+            "name": "Get orders",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.up42.com/v2/orders",
+            "params": [
+              {
+                "name": "workspaceId",
+                "value": "",
+                "type": "query",
+                "description": "The workspace that scopes the request."
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Lists orders, optionally filtered by workspace and status."
+        },
+        {
+          "info": {
+            "name": "Create an order",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.up42.com/v2/orders",
+            "params": [
+              {
+                "name": "workspaceId",
+                "value": "",
+                "type": "query",
+                "description": "The workspace the order is placed under."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Places a catalog or tasking order under a workspace. The workspaceId query parameter is required. Catalog orders are fulfilled immediately; tasking orders proceed to acquisition after the quotation is accepted."
+        },
+        {
+          "info": {
+            "name": "Get an order",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.up42.com/v2/orders/:orderId",
+            "params": [
+              {
+                "name": "orderId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Retrieves a single order by its ID, including its current status."
+        },
+        {
+          "info": {
+            "name": "Update an order",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.up42.com/v2/orders/:orderId",
+            "params": [
+              {
+                "name": "orderId",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates mutable fields of an order (for example, its tags)."
+        },
+        {
+          "info": {
+            "name": "Cancel an order",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.up42.com/v2/orders/:orderId/cancel",
+            "params": [
+              {
+                "name": "orderId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Cancels an order that is still in a cancellable state (for example CREATED or PLACEMENT_FAILED)."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,108 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "UP42 Catalog API",
+    "version": "2.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Catalog",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get geospatial collections",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.up42.com/v2/collections",
+            "params": [
+              {
+                "name": "type",
+                "value": "",
+                "type": "query",
+                "description": "Filter collections by ordering type (ARCHIVE or TASKING)."
+              }
+            ]
+          },
+          "docs": "Returns the list of geospatial collections available on UP42 (both catalog and tasking), each describing a data product, its provider/host, and supported ordering parameters."
+        },
+        {
+          "info": {
+            "name": "Get a geospatial collection",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.up42.com/v2/collections/:collection",
+            "params": [
+              {
+                "name": "collection",
+                "value": "",
+                "type": "path",
+                "description": "The unique name of the collection."
+              }
+            ]
+          },
+          "docs": "Retrieves a single geospatial collection by its unique name."
+        },
+        {
+          "info": {
+            "name": "Search the catalog by host",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.up42.com/catalog/hosts/:host/stac/search",
+            "params": [
+              {
+                "name": "host",
+                "value": "",
+                "type": "path",
+                "description": "The catalog host to search (for example, oneatlas)."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Runs a STAC search against a host's archive catalog. Filter by collection, area of interest (intersects/bbox), acquisition datetime range, and property queries such as cloud cover, then page through matching scenes."
+        },
+        {
+          "info": {
+            "name": "Get a quicklook",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.up42.com/catalog/:provider/image/:imageId/quicklook",
+            "params": [
+              {
+                "name": "provider",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "imageId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Returns a low-resolution quicklook preview image for an archive scene."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

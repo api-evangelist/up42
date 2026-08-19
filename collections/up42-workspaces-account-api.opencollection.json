@@ -1,0 +1,57 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "UP42 Catalog Workspaces & Account API",
+    "version": "2.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Workspaces & Account",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get the authenticated account",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.up42.com/v2/account"
+          },
+          "docs": "Returns the account associated with the current access token."
+        },
+        {
+          "info": {
+            "name": "Get workspaces",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.up42.com/v2/workspaces"
+          },
+          "docs": "Lists the workspaces available to the account. A workspace ID scopes ordering, storage, and processing calls."
+        },
+        {
+          "info": {
+            "name": "Get budgets",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.up42.com/v2/budgets"
+          },
+          "docs": "Lists budgets that cap credit spend. Available to enterprise accounts."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

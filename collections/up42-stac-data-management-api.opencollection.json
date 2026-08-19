@@ -1,0 +1,176 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "UP42 Catalog STAC Data Management API",
+    "version": "2.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "STAC Data Management",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get the STAC landing page",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.up42.com/v2/sas"
+          },
+          "docs": "Returns the STAC API landing page for your storage, including the API version and the STAC extensions it conforms to."
+        },
+        {
+          "info": {
+            "name": "Get STAC collections",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.up42.com/v2/sas/collections"
+          },
+          "docs": "Lists all STAC collections in your storage."
+        },
+        {
+          "info": {
+            "name": "Get a STAC collection",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.up42.com/v2/sas/collections/:collectionId",
+            "params": [
+              {
+                "name": "collectionId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Retrieves a single STAC collection by its ID."
+        },
+        {
+          "info": {
+            "name": "Remove a STAC collection",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.up42.com/v2/sas/collections/:collectionId",
+            "params": [
+              {
+                "name": "collectionId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Deletes a STAC collection and its items from your storage."
+        },
+        {
+          "info": {
+            "name": "Get STAC items",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.up42.com/v2/sas/collections/:collectionId/items",
+            "params": [
+              {
+                "name": "collectionId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Lists all STAC items in a collection."
+        },
+        {
+          "info": {
+            "name": "Get a STAC item",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.up42.com/v2/sas/collections/:collectionId/items/:itemId",
+            "params": [
+              {
+                "name": "collectionId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "itemId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Retrieves a single STAC item by ID within a collection."
+        },
+        {
+          "info": {
+            "name": "Update a STAC item",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.up42.com/v2/sas/collections/:collectionId/items/:itemId",
+            "params": [
+              {
+                "name": "collectionId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "itemId",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates the title or tags of a STAC item."
+        },
+        {
+          "info": {
+            "name": "Get data management search parameters",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.up42.com/v2/sas/queryables"
+          },
+          "docs": "Returns the queryable properties available for STAC searches over your storage."
+        },
+        {
+          "info": {
+            "name": "Search for STAC items",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.up42.com/v2/sas/search",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Runs a STAC search across all STAC items in your storage, filtering by collection, geometry, datetime, and queryable properties."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
