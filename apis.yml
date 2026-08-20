@@ -76,6 +76,8 @@ apis:
   humanURL: https://docs.up42.com/developers/api-catalog
   baseURL: https://api.up42.com
   tags:
+  - Order
+  tags_raw:
   - Orders
   properties:
   - type: OpenAPI
@@ -226,6 +228,8 @@ apis:
   humanURL: https://docs.up42.com/developers/api-catalog
   baseURL: https://api.up42.com
   tags:
+  - Webhook
+  tags_raw:
   - Webhooks
   properties:
   - type: OpenAPI
