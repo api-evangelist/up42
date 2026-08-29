@@ -13,6 +13,18 @@ description: UP42 is a geospatial marketplace and developer platform for Earth
   wrapped by an official Python SDK. Storage is powered by STAC and the
   cloud-native asset model, and job/order status changes can be pushed to consumer
   endpoints via webhooks.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 accessModel:
   pricing: paid
   onboarding: self-serve
