@@ -1,14 +1,7 @@
 {
   "provider": "up42",
   "sources": [
-    "up42-catalog-api-openapi.yml",
-    "up42-orders-api-openapi.yml",
-    "up42-processing-api-openapi.yml",
-    "up42-stac-data-management-api-openapi.yml",
-    "up42-storage-assets-api-openapi.yml",
-    "up42-tasking-api-openapi.yml",
-    "up42-webhooks-api-openapi.yml",
-    "up42-workspaces-account-api-openapi.yml"
+    "_original/up42-openapi.yml"
   ],
   "outputs": [
     "up42-catalog-api-openapi.yml",
@@ -23,6 +16,19 @@
   "archived": [],
   "errors": [],
   "warnings": [],
-  "notes": [],
-  "skipped": []
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "up42-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "up42-catalog-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "up42-orders-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "up42-processing-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "up42-stac-data-management-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "up42-storage-assets-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "up42-tasking-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "up42-webhooks-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "up42-workspaces-account-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }
