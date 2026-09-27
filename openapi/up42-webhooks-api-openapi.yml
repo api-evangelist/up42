@@ -148,6 +148,15 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Webhook'
+    Error:
+      type: object
+      properties:
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
     Webhook:
       allOf:
       - $ref: '#/components/schemas/WebhookInput'
@@ -183,15 +192,6 @@ components:
         active:
           type: boolean
           default: true
-    Error:
-      type: object
-      properties:
-        title:
-          type: string
-        status:
-          type: integer
-        detail:
-          type: string
   responses:
     NotFound:
       description: The requested resource was not found.

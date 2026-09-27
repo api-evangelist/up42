@@ -150,6 +150,35 @@ paths:
           $ref: '#/components/responses/Unauthorized'
 components:
   schemas:
+    Error:
+      type: object
+      properties:
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+    Feasibility:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        status:
+          type: string
+        options:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+    QuotationList:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/Quotation'
     Quotation:
       type: object
       properties:
@@ -164,35 +193,6 @@ components:
           - DECLINED
         credits:
           type: integer
-    Feasibility:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        status:
-          type: string
-        options:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
-    Error:
-      type: object
-      properties:
-        title:
-          type: string
-        status:
-          type: integer
-        detail:
-          type: string
-    QuotationList:
-      type: object
-      properties:
-        content:
-          type: array
-          items:
-            $ref: '#/components/schemas/Quotation'
     FeasibilityList:
       type: object
       properties:
@@ -200,15 +200,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Feasibility'
-  parameters:
-    WorkspaceIdQuery:
-      name: workspaceId
-      in: query
-      required: false
-      description: The workspace that scopes the request.
-      schema:
-        type: string
-        format: uuid
   responses:
     NotFound:
       description: The requested resource was not found.
@@ -222,6 +213,15 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
+  parameters:
+    WorkspaceIdQuery:
+      name: workspaceId
+      in: query
+      required: false
+      description: The workspace that scopes the request.
+      schema:
+        type: string
+        format: uuid
   securitySchemes:
     bearerAuth:
       type: http

@@ -199,16 +199,6 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   schemas:
-    OrderEstimate:
-      type: object
-      properties:
-        credits:
-          type: integer
-        size:
-          type: number
-          description: Area of the order in km2.
-        unit:
-          type: string
     OrderList:
       type: object
       properties:
@@ -225,20 +215,6 @@ components:
           type: integer
         detail:
           type: string
-    OrderInput:
-      type: object
-      properties:
-        dataProduct:
-          type: string
-          format: uuid
-        params:
-          type: object
-          description: Product-specific order parameters, including aoi and image IDs.
-          additionalProperties: true
-        tags:
-          type: array
-          items:
-            type: string
     Order:
       type: object
       properties:
@@ -262,15 +238,30 @@ components:
         createdAt:
           type: string
           format: date-time
-  parameters:
-    WorkspaceIdQuery:
-      name: workspaceId
-      in: query
-      required: false
-      description: The workspace that scopes the request.
-      schema:
-        type: string
-        format: uuid
+    OrderEstimate:
+      type: object
+      properties:
+        credits:
+          type: integer
+        size:
+          type: number
+          description: Area of the order in km2.
+        unit:
+          type: string
+    OrderInput:
+      type: object
+      properties:
+        dataProduct:
+          type: string
+          format: uuid
+        params:
+          type: object
+          description: Product-specific order parameters, including aoi and image IDs.
+          additionalProperties: true
+        tags:
+          type: array
+          items:
+            type: string
   responses:
     NotFound:
       description: The requested resource was not found.
@@ -290,6 +281,15 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
+  parameters:
+    WorkspaceIdQuery:
+      name: workspaceId
+      in: query
+      required: false
+      description: The workspace that scopes the request.
+      schema:
+        type: string
+        format: uuid
   securitySchemes:
     bearerAuth:
       type: http

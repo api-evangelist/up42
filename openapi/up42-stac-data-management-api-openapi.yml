@@ -221,16 +221,15 @@ paths:
           $ref: '#/components/responses/Unauthorized'
 components:
   schemas:
-    StacItemCollection:
+    Error:
       type: object
       properties:
-        type:
+        title:
           type: string
-          default: FeatureCollection
-        features:
-          type: array
-          items:
-            $ref: '#/components/schemas/StacItem'
+        status:
+          type: integer
+        detail:
+          type: string
     StacItem:
       type: object
       properties:
@@ -256,15 +255,6 @@ components:
         assets:
           type: object
           additionalProperties: true
-    Error:
-      type: object
-      properties:
-        title:
-          type: string
-        status:
-          type: integer
-        detail:
-          type: string
     StacSearchRequest:
       type: object
       properties:
@@ -290,6 +280,16 @@ components:
         limit:
           type: integer
           default: 10
+    StacItemCollection:
+      type: object
+      properties:
+        type:
+          type: string
+          default: FeatureCollection
+        features:
+          type: array
+          items:
+            $ref: '#/components/schemas/StacItem'
   responses:
     NotFound:
       description: The requested resource was not found.
