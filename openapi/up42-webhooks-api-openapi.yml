@@ -141,6 +141,17 @@ paths:
           $ref: '#/components/responses/Unauthorized'
 components:
   schemas:
+    Webhook:
+      allOf:
+      - $ref: '#/components/schemas/WebhookInput'
+      - type: object
+        properties:
+          id:
+            type: string
+            format: uuid
+          createdAt:
+            type: string
+            format: date-time
     WebhookList:
       type: object
       properties:
@@ -157,17 +168,6 @@ components:
           type: integer
         detail:
           type: string
-    Webhook:
-      allOf:
-      - $ref: '#/components/schemas/WebhookInput'
-      - type: object
-        properties:
-          id:
-            type: string
-            format: uuid
-          createdAt:
-            type: string
-            format: date-time
     WebhookInput:
       type: object
       required:
@@ -199,14 +199,14 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Missing or invalid access token.
+    ValidationError:
+      description: The request payload failed validation.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    ValidationError:
-      description: The request payload failed validation.
+    Unauthorized:
+      description: Missing or invalid access token.
       content:
         application/json:
           schema:

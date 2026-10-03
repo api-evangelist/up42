@@ -150,15 +150,13 @@ paths:
           $ref: '#/components/responses/Unauthorized'
 components:
   schemas:
-    Error:
+    FeasibilityList:
       type: object
       properties:
-        title:
-          type: string
-        status:
-          type: integer
-        detail:
-          type: string
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/Feasibility'
     Feasibility:
       type: object
       properties:
@@ -172,6 +170,15 @@ components:
           items:
             type: object
             additionalProperties: true
+    Error:
+      type: object
+      properties:
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
     QuotationList:
       type: object
       properties:
@@ -193,13 +200,6 @@ components:
           - DECLINED
         credits:
           type: integer
-    FeasibilityList:
-      type: object
-      properties:
-        content:
-          type: array
-          items:
-            $ref: '#/components/schemas/Feasibility'
   responses:
     NotFound:
       description: The requested resource was not found.

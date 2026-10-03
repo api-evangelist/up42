@@ -199,13 +199,6 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   schemas:
-    OrderList:
-      type: object
-      properties:
-        content:
-          type: array
-          items:
-            $ref: '#/components/schemas/Order'
     Error:
       type: object
       properties:
@@ -215,6 +208,20 @@ components:
           type: integer
         detail:
           type: string
+    OrderInput:
+      type: object
+      properties:
+        dataProduct:
+          type: string
+          format: uuid
+        params:
+          type: object
+          description: Product-specific order parameters, including aoi and image IDs.
+          additionalProperties: true
+        tags:
+          type: array
+          items:
+            type: string
     Order:
       type: object
       properties:
@@ -238,6 +245,13 @@ components:
         createdAt:
           type: string
           format: date-time
+    OrderList:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/Order'
     OrderEstimate:
       type: object
       properties:
@@ -248,20 +262,6 @@ components:
           description: Area of the order in km2.
         unit:
           type: string
-    OrderInput:
-      type: object
-      properties:
-        dataProduct:
-          type: string
-          format: uuid
-        params:
-          type: object
-          description: Product-specific order parameters, including aoi and image IDs.
-          additionalProperties: true
-        tags:
-          type: array
-          items:
-            type: string
   responses:
     NotFound:
       description: The requested resource was not found.

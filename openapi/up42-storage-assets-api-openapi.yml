@@ -109,13 +109,6 @@ components:
           type: integer
         detail:
           type: string
-    AssetList:
-      type: object
-      properties:
-        content:
-          type: array
-          items:
-            $ref: '#/components/schemas/Asset'
     Asset:
       type: object
       properties:
@@ -134,6 +127,13 @@ components:
         createdAt:
           type: string
           format: date-time
+    AssetList:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/Asset'
   responses:
     NotFound:
       description: The requested resource was not found.
