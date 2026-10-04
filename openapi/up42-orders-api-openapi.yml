@@ -198,30 +198,26 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 components:
+  responses:
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ValidationError:
+      description: The request payload failed validation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Missing or invalid access token.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
-    Error:
-      type: object
-      properties:
-        title:
-          type: string
-        status:
-          type: integer
-        detail:
-          type: string
-    OrderInput:
-      type: object
-      properties:
-        dataProduct:
-          type: string
-          format: uuid
-        params:
-          type: object
-          description: Product-specific order parameters, including aoi and image IDs.
-          additionalProperties: true
-        tags:
-          type: array
-          items:
-            type: string
     Order:
       type: object
       properties:
@@ -245,6 +241,29 @@ components:
         createdAt:
           type: string
           format: date-time
+    OrderInput:
+      type: object
+      properties:
+        dataProduct:
+          type: string
+          format: uuid
+        params:
+          type: object
+          description: Product-specific order parameters, including aoi and image IDs.
+          additionalProperties: true
+        tags:
+          type: array
+          items:
+            type: string
+    Error:
+      type: object
+      properties:
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
     OrderList:
       type: object
       properties:
@@ -262,25 +281,6 @@ components:
           description: Area of the order in km2.
         unit:
           type: string
-  responses:
-    NotFound:
-      description: The requested resource was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Missing or invalid access token.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ValidationError:
-      description: The request payload failed validation.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   parameters:
     WorkspaceIdQuery:
       name: workspaceId

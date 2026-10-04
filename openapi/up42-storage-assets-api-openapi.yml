@@ -100,15 +100,6 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   schemas:
-    Error:
-      type: object
-      properties:
-        title:
-          type: string
-        status:
-          type: integer
-        detail:
-          type: string
     Asset:
       type: object
       properties:
@@ -134,6 +125,15 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Asset'
+    Error:
+      type: object
+      properties:
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
   responses:
     NotFound:
       description: The requested resource was not found.
