@@ -298,6 +298,9 @@ apis:
   - type: Documentation
     url: https://docs.up42.com/help/webhooks
 common:
+- type: CapabilityMap
+  url: capabilities/up42-capability-edges.yml
+  name: UP42 Business Capability Map
 - type: AgenticAccess
   url: agentic-access/up42-agentic-access.yml
 - type: DomainSecurity

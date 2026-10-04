@@ -1,0 +1,26 @@
+slug: up42
+provider: UP42
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Software & Technology
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 1
+edges:
+- tag: Webhooks
+  spec_file: up42-webhooks-api-openapi.yml
+  capability_id: BC-4270.80
+  capability_id_l1: BC-4270
+  capability_name: Webhook & Event Subscription Management
+  confidence: 0.85
+  evidence: POST /v2/webhooks createWebhook 'Create a webhook'; GET /v2/webhooks/events listWebhookEvents
+    'Get webhook events'; schemas Webhook, WebhookInput
+  reason: Full CRUD lifecycle over outbound webhook subscriptions plus an event-type catalogue on a developer
+    platform — exactly Webhook & Event Subscription Management. Not a generic plumbing abstain case because
+    the capability framework explicitly carries this as a business capability for SaaS platforms.
