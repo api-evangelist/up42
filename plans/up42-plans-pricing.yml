@@ -149,3 +149,50 @@ plans:
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
+x-canonical:
+  generated: '2026-10-08'
+  vocabulary: all/0-working/economics/plans-canonical.yml
+  models:
+  - metered
+  - subscription
+  units:
+  - credit
+  - negotiated
+  - object
+  plans:
+  - name: Pay-As-You-Go Credits
+    access: other
+    model: metered
+    model_how: stated
+    units:
+    - credit
+    periods: []
+  - name: Catalog (Archive) Data
+    access: other
+    model: metered
+    model_how: stated
+    units:
+    - other
+    periods: []
+  - name: Tasking (New Acquisitions)
+    access: other
+    model: metered
+    model_how: stated
+    units:
+    - object
+    periods: []
+  - name: Processing and Analytics
+    access: other
+    model: metered
+    model_how: stated
+    units:
+    - other
+    periods: []
+  - name: Enterprise / Platform
+    access: enterprise
+    model: subscription
+    model_how: derived
+    units:
+    - negotiated
+    periods:
+    - year
